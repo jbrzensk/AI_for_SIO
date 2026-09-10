@@ -2,6 +2,7 @@ import * as modelApi from './model.js';
 import { renderTokens } from './render-tokens.js';
 import { renderPrediction } from './render-prediction.js';
 import { softmaxWithTemperature, topK } from './math.js';
+import { renderEmbeddings } from './render-embeddings.js';
 
 const els = {
   input: document.getElementById('sentence-input'),
@@ -88,6 +89,7 @@ async function handleRun() {
   try {
     const { tokens, ids } = modelApi.tokenize(text);
     renderTokens(els.tokensSection, tokens, ids);
+    renderEmbeddings(els.embeddingsSection, tokens);
 
     state.currentText = text;
     state.lastLogits = await modelApi.predictNextTokenLogits(text);
