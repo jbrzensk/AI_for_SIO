@@ -1,5 +1,7 @@
 import * as modelApi from './model.js';
 import { renderTokens } from './render-tokens.js';
+import { renderPrediction } from './render-prediction.js';
+import { softmaxWithTemperature, topK } from './math.js';
 
 const els = {
   input: document.getElementById('sentence-input'),
@@ -14,6 +16,12 @@ const els = {
   embeddingsSection: document.getElementById('embeddings-section'),
   attentionSection: document.getElementById('attention-section'),
   predictionSection: document.getElementById('prediction-section'),
+};
+
+const state = {
+  temperature: 0.7,
+  currentText: '',
+  lastLogits: null,
 };
 
 function showError(message) {
@@ -52,6 +60,26 @@ async function handleLoad() {
   }
 }
 
+function renderPredictionSection() {
+  renderPrediction(els.predictionSection, {
+    logits: state.lastLogits,
+    decodeTokenId: modelApi.decodeTokenId,
+    temperature: state.temperature,
+    onTemperatureChange: (value) => {
+      state.temperature = value;
+      renderPredictionSection();
+    },
+    onStep: async () => {
+      if (!state.lastLogits) return;
+      const probs = softmaxWithTemperature(state.lastLogits, state.temperature);
+      const [{ index }] = topK(probs, 1);
+      const nextText = modelApi.decodeTokenId(index);
+      els.input.value = state.currentText + nextText;
+      await handleRun();
+    },
+  });
+}
+
 async function handleRun() {
   clearError();
   const text = els.input.value;
@@ -60,6 +88,10 @@ async function handleRun() {
   try {
     const { tokens, ids } = modelApi.tokenize(text);
     renderTokens(els.tokensSection, tokens, ids);
+
+    state.currentText = text;
+    state.lastLogits = await modelApi.predictNextTokenLogits(text);
+    renderPredictionSection();
   } catch (err) {
     console.error(err);
     showError('Something went wrong running the model. See the console for details.');
