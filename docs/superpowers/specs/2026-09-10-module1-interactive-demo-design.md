@@ -9,6 +9,10 @@ language model and lets the learner watch their own sentence move
 through each of those stages, reinforcing the README's mechanics with
 something they did, not just read — consistent with this repo's stated
 goal that every module "end with something you did, not just read."
+(Tokenization and next-token prediction are the model's genuine
+output; embeddings and attention are clearly-labeled illustrative
+approximations — see "What's real vs. illustrative" under Model
+below, a correction made after inspecting the actual model file.)
 
 ## Scope
 
@@ -40,10 +44,7 @@ shouldn't need to learn a JS toolchain to edit it).
 
 - **Model:** `Xenova/distilgpt2` — a real, small GPT-2 variant already
   published in transformers.js-compatible ONNX format (no conversion
-  work needed). Its architecture matches what the README already
-  teaches (token embeddings, multi-head attention, autoregressive
-  next-token prediction), so what the demo shows is literally the
-  mechanism the prose describes, not an analogy for it.
+  work needed).
 - **Loading:** lazy — nothing downloads until the learner clicks
   "Load the model." A visible progress bar tracks download percentage.
   A plain-language notice appears before the download starts
@@ -51,6 +52,48 @@ shouldn't need to learn a JS toolchain to edit it).
 - **Inference:** runs entirely client-side (WASM, or WebGPU where
   available) via transformers.js. No data leaves the learner's
   browser.
+
+### What's real vs. illustrative (important correction from initial brainstorm)
+
+The published `Xenova/distilgpt2` ONNX graph (verified by inspecting
+its declared graph outputs directly) only exposes two things:
+`logits` and the `present.*.key`/`present.*.value` KV-cache tensors
+used internally for fast generation. It does **not** expose attention
+weights or hidden-state/embedding vectors — those were never wired up
+as graph outputs at export time, and there is no runtime flag that
+makes a static ONNX graph emit tensors it wasn't built to emit.
+
+This means, concretely:
+
+- **Tokenization** — 100% real. Happens in JS via the model's real
+  tokenizer before any model call.
+- **Autoregressive prediction** — 100% real. `logits` is a genuine
+  model output, so the top-5 next-token probabilities and the
+  temperature slider reflect the model's actual behavior.
+- **Embeddings** and **Attention** — the real tensors are not
+  obtainable from this model file, full stop (not merely
+  difficult — the graph doesn't produce them). These two panels are
+  therefore **illustrative, hand-built approximations**, clearly
+  labeled as such in the UI, rather than the model's real internals:
+  - *Embeddings panel:* each token gets a small deterministic vector
+    derived from a character-n-gram hash of its text (a legitimate,
+    simplified feature-hashing technique — not random noise, but not
+    distilgpt2's real embedding either). The heatmap strip visualizes
+    "a token becomes a vector of numbers." The accompanying 2D plot
+    positions tokens by similarity *of these hashed vectors*, and is
+    captioned to say so explicitly — it will tend to cluster tokens
+    that share spelling/substrings, not necessarily meaning, and the
+    UI must not claim otherwise.
+  - *Attention panel:* weights are computed by a distance +
+    repetition heuristic (tokens closer together, and tokens that
+    are repeats of an earlier token, get higher weight), rendered as
+    the same token-by-token heatmap the real-data version would have
+    used. Captioned explicitly as an illustrative pattern, not
+    distilgpt2's real attention weights.
+
+  Both panels carry a visible, permanent caption (not a dismissible
+  tooltip) making this distinction, so the page never implies these
+  two panels are measuring the model itself.
 
 ## Page structure & UX
 
@@ -64,14 +107,16 @@ Single page, single flow:
    isn't ready.
 3. **Tokens** — chips rendering each token of the input alongside its
    integer id. Directly mirrors the README's step-1 example.
-4. **Embeddings** — each token's embedding rendered as a small
-   color-coded heatmap strip (communicates "this is a vector of
-   numbers," not intended to teach vector math), plus one simple 2D
-   plot positioning tokens by similarity to each other.
-5. **Attention** — a token-by-token heatmap for a selected
-   layer/head (a sensible default layer is picked to try to surface a
-   pronoun-to-referent pattern when the input has one), directly
-   demonstrating the README's "it" → noun tracking example.
+4. **Embeddings (illustrative — see "What's real vs. illustrative"
+   above)** — each token's hashed vector rendered as a small
+   color-coded heatmap strip, plus one simple 2D plot positioning
+   tokens by similarity of those hashed vectors. Permanently captioned
+   as a simplified illustration, not the model's real embeddings.
+5. **Attention (illustrative — see above)** — a token-by-token
+   heatmap driven by the distance + repetition heuristic. Permanently
+   captioned as an illustrative pattern, not the model's real
+   attention weights. No layer/head selector, since there's no real
+   per-layer/per-head data to switch between.
 6. **Prediction** — top-5 next-token candidates as probability bars, a
    temperature slider (wired to the same 0–1 range and behavior the
    README describes) that live-recomputes the bars, and a "step"
@@ -99,9 +144,9 @@ Verification is manual, via a local static server (ES modules require
   drag the temperature slider and confirm bars update → click step a
   few times and confirm generation continues sensibly.
 - Edge cases: empty input (Run stays disabled), a sentence with a
-  pronoun referring to an earlier noun (sanity-check the attention
-  heatmap shows a plausible pattern), a simulated slow/failed load
-  (error + retry path).
+  repeated word (sanity-check the illustrative attention heatmap
+  reflects the repetition heuristic as designed), a simulated
+  slow/failed load (error + retry path).
 
 This will be reported as manual verification, not automated coverage.
 
