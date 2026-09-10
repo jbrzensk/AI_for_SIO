@@ -1,43 +1,76 @@
 import { softmaxWithTemperature, topK } from './math.js';
 
 export function renderPrediction(container, { logits, decodeTokenId, temperature, onTemperatureChange, onStep }) {
-  container.innerHTML = '';
-
   if (!logits) {
+    container.innerHTML = '';
+    container._predictionLogitsRef = null;
     container.textContent = 'Click Run to see next-token predictions.';
     return;
   }
 
-  const controls = document.createElement('div');
-  controls.className = 'prediction-controls';
+  // Only rebuild the controls subtree (slider + Step button) when the container
+  // is otherwise empty (first render after a Run) or `logits` is a new object
+  // (a new Run happened). A pure temperature change re-renders with the SAME
+  // logits reference, so this branch is skipped and the slider/button elements
+  // the user may be actively interacting with are never removed/recreated.
+  const isFreshRender = container._predictionLogitsRef !== logits;
 
-  const sliderLabel = document.createElement('label');
-  sliderLabel.textContent = `Temperature: ${temperature.toFixed(2)} `;
-  const slider = document.createElement('input');
-  slider.type = 'range';
-  slider.min = '0.1';
-  slider.max = '1.5';
-  slider.step = '0.05';
-  slider.value = String(temperature);
-  slider.addEventListener('input', () => {
-    onTemperatureChange(Number(slider.value));
-  });
-  sliderLabel.appendChild(slider);
-  controls.appendChild(sliderLabel);
+  if (isFreshRender) {
+    container.innerHTML = '';
+    container._predictionLogitsRef = logits;
 
-  const stepButton = document.createElement('button');
-  stepButton.type = 'button';
-  stepButton.textContent = 'Step: accept top token and continue';
-  stepButton.addEventListener('click', onStep);
-  controls.appendChild(stepButton);
+    const controls = document.createElement('div');
+    controls.className = 'prediction-controls';
 
-  container.appendChild(controls);
+    const sliderLabel = document.createElement('label');
+    const sliderLabelText = document.createElement('span');
+    sliderLabelText.className = 'prediction-temp-label';
+    sliderLabelText.textContent = `Temperature: ${temperature.toFixed(2)} `;
+    sliderLabel.appendChild(sliderLabelText);
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'prediction-temp-slider';
+    slider.min = '0.1';
+    slider.max = '1.5';
+    slider.step = '0.05';
+    slider.value = String(temperature);
+    slider.addEventListener('input', () => {
+      onTemperatureChange(Number(slider.value));
+    });
+    sliderLabel.appendChild(slider);
+    controls.appendChild(sliderLabel);
+
+    const stepButton = document.createElement('button');
+    stepButton.type = 'button';
+    stepButton.className = 'prediction-step-button';
+    stepButton.textContent = 'Step: accept top token and continue';
+    stepButton.addEventListener('click', onStep);
+    controls.appendChild(stepButton);
+
+    container.appendChild(controls);
+
+    const list = document.createElement('div');
+    list.className = 'prediction-bars';
+    container.appendChild(list);
+  } else {
+    // Temperature-only change: update the label text in place. Do NOT touch
+    // the slider's value here — it already reflects what the user is dragging,
+    // and this whole branch is reached specifically to avoid recreating it.
+    const sliderLabelText = container.querySelector('.prediction-temp-label');
+    if (sliderLabelText) {
+      sliderLabelText.textContent = `Temperature: ${temperature.toFixed(2)} `;
+    }
+  }
+
+  // The bars subtree always gets torn down and rebuilt — this is cheap and
+  // never affects the slider or Step button elements.
+  const list = container.querySelector('.prediction-bars');
+  list.innerHTML = '';
 
   const probs = softmaxWithTemperature(logits, temperature);
   const top5 = topK(probs, 5);
 
-  const list = document.createElement('div');
-  list.className = 'prediction-bars';
   top5.forEach(({ index, value }) => {
     const row = document.createElement('div');
     row.className = 'prediction-row';
@@ -60,5 +93,4 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
     row.append(label, track, pct);
     list.appendChild(row);
   });
-  container.appendChild(list);
 }

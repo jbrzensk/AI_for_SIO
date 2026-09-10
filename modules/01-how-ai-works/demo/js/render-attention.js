@@ -41,5 +41,8 @@ export function renderAttention(container, tokens) {
     table.appendChild(tr);
   });
 
-  container.appendChild(table);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'attention-table-wrapper';
+  wrapper.appendChild(table);
+  container.appendChild(wrapper);
 }

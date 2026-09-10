@@ -127,6 +127,10 @@ section {
   fill: var(--fg);
 }
 
+.attention-table-wrapper {
+  overflow-x: auto;
+}
+
 .attention-table {
   border-collapse: collapse;
   font-size: 0.8rem;

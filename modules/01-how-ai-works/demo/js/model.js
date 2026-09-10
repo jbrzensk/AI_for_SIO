@@ -13,7 +13,16 @@ export async function loadModel(onProgress) {
   tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID);
   model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
     progress_callback: (info) => {
-      if (info.status === 'progress_total' && typeof onProgress === 'function') {
+      // Some transformers.js versions only emit 'progress_total' (combined,
+      // file-size-aware percentage) when they successfully prefetch file-size
+      // metadata first; if that prefetch fails, only plain 'progress' events
+      // fire. Accept either so the bar isn't stuck at 0% for the whole
+      // download when the prefetch silently fails.
+      if (
+        (info.status === 'progress_total' || info.status === 'progress') &&
+        typeof info.progress === 'number' &&
+        typeof onProgress === 'function'
+      ) {
         onProgress(info.progress);
       }
     },
