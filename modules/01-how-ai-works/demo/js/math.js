@@ -79,6 +79,20 @@ export function topK(values, k) {
     .slice(0, k);
 }
 
+// Picks one candidate at random, weighted by its `value`. `rng` is injectable
+// (defaults to Math.random) so this stays deterministically testable — pass a
+// fixed sequence of values in a test instead of relying on real randomness.
+export function sampleWeighted(candidates, rng = Math.random) {
+  const total = candidates.reduce((sum, c) => sum + c.value, 0);
+  if (total <= 0) return candidates[0];
+  let r = rng() * total;
+  for (const candidate of candidates) {
+    r -= candidate.value;
+    if (r <= 0) return candidate;
+  }
+  return candidates[candidates.length - 1];
+}
+
 export function attentionWeights(tokens) {
   const n = tokens.length;
   const matrix = [];

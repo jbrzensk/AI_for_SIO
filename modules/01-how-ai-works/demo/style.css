@@ -46,9 +46,11 @@ section {
   padding: 1rem;
 }
 
-.controls input[type='text'] {
+.controls textarea {
   font-size: 1rem;
+  font-family: inherit;
   padding: 0.5rem;
+  resize: vertical;
 }
 
 .load-row {

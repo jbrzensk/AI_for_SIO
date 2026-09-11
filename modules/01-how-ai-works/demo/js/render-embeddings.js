@@ -1,4 +1,5 @@
 import { hashEmbedding, project2D, cosineSimilarity } from './math.js';
+import { visibleLabel } from './visible-label.js';
 
 export function renderEmbeddings(container, tokens) {
   container.innerHTML = '';
@@ -23,7 +24,7 @@ export function renderEmbeddings(container, tokens) {
 
     const label = document.createElement('span');
     label.className = 'embedding-row-label';
-    label.textContent = token;
+    label.textContent = visibleLabel(token);
 
     const strip = document.createElement('div');
     strip.className = 'embedding-strip';
@@ -75,7 +76,7 @@ export function renderEmbeddings(container, tokens) {
     }
     const summary = document.createElement('p');
     summary.className = 'illustrative-caption';
-    summary.textContent = `Most similar pair in this simplified space: "${tokens[best.i]}" and "${tokens[best.j]}" (cosine similarity ${best.score.toFixed(2)}).`;
+    summary.textContent = `Most similar pair in this simplified space: "${visibleLabel(tokens[best.i])}" and "${visibleLabel(tokens[best.j])}" (cosine similarity ${best.score.toFixed(2)}).`;
     container.appendChild(summary);
   }
 }

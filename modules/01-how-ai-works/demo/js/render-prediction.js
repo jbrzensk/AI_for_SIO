@@ -1,4 +1,5 @@
 import { softmaxWithTemperature, topK } from './math.js';
+import { visibleLabel } from './visible-label.js';
 
 export function renderPrediction(container, { logits, decodeTokenId, temperature, onTemperatureChange, onStep }) {
   if (!logits) {
@@ -44,7 +45,7 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
     const stepButton = document.createElement('button');
     stepButton.type = 'button';
     stepButton.className = 'prediction-step-button';
-    stepButton.textContent = 'Step: accept top token and continue';
+    stepButton.textContent = 'Step: sample a token and continue';
     stepButton.addEventListener('click', onStep);
     controls.appendChild(stepButton);
 
@@ -77,7 +78,7 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
 
     const label = document.createElement('span');
     label.className = 'prediction-token';
-    label.textContent = decodeTokenId(index);
+    label.textContent = visibleLabel(decodeTokenId(index));
 
     const track = document.createElement('div');
     track.className = 'prediction-bar-track';

@@ -1,4 +1,5 @@
 import { attentionWeights } from './math.js';
+import { visibleLabel } from './visible-label.js';
 
 export function renderAttention(container, tokens) {
   container.innerHTML = '';
@@ -20,7 +21,7 @@ export function renderAttention(container, tokens) {
   headerRow.appendChild(document.createElement('th'));
   tokens.forEach((token) => {
     const th = document.createElement('th');
-    th.textContent = token;
+    th.textContent = visibleLabel(token);
     headerRow.appendChild(th);
   });
   table.appendChild(headerRow);
@@ -28,7 +29,7 @@ export function renderAttention(container, tokens) {
   matrix.forEach((row, i) => {
     const tr = document.createElement('tr');
     const rowHeader = document.createElement('th');
-    rowHeader.textContent = tokens[i];
+    rowHeader.textContent = visibleLabel(tokens[i]);
     tr.appendChild(rowHeader);
 
     row.forEach((weight) => {

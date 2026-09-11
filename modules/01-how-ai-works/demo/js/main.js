@@ -1,7 +1,7 @@
 import * as modelApi from './model.js';
 import { renderTokens } from './render-tokens.js';
 import { renderPrediction } from './render-prediction.js';
-import { softmaxWithTemperature, topK } from './math.js';
+import { softmaxWithTemperature, topK, sampleWeighted } from './math.js';
 import { renderEmbeddings } from './render-embeddings.js';
 import { renderAttention } from './render-attention.js';
 
@@ -78,8 +78,16 @@ function renderPredictionSection() {
     },
     onStep: async () => {
       if (!state.lastLogits) return;
+      // Sample from the same top-5 candidates shown in the bars, weighted by
+      // their temperature-adjusted probability — never always the single top
+      // token. Deterministic argmax has no way out of a repetition loop (a
+      // small model's next most likely token after one newline is often
+      // another newline); weighted sampling gives lower-ranked candidates a
+      // real (temperature-controlled) chance, which is also what the
+      // temperature slider is teaching in the first place.
       const probs = softmaxWithTemperature(state.lastLogits, state.temperature);
-      const [{ index }] = topK(probs, 1);
+      const candidates = topK(probs, 5);
+      const { index } = sampleWeighted(candidates);
       const nextText = modelApi.decodeTokenId(index);
       els.input.value = state.currentText + nextText;
       await handleRun();
