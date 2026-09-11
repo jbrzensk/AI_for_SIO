@@ -1,3 +1,5 @@
+import { visibleLabel } from './visible-label.js';
+
 export function renderTokens(container, tokens, ids) {
   container.innerHTML = '';
   if (tokens.length === 0) {
@@ -10,7 +12,7 @@ export function renderTokens(container, tokens, ids) {
 
     const label = document.createElement('span');
     label.className = 'token-chip-text';
-    label.textContent = token;
+    label.textContent = visibleLabel(token);
 
     const idLabel = document.createElement('span');
     idLabel.className = 'token-chip-id';

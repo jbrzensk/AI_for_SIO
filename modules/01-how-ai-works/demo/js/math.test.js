@@ -6,6 +6,7 @@ import {
   project2D,
   softmaxWithTemperature,
   topK,
+  sampleWeighted,
   attentionWeights,
 } from './math.js';
 
@@ -57,6 +58,45 @@ test('topK returns the k largest values in descending order with original indice
   const result = topK([5, 1, 9, 3], 2);
   assert.deepEqual(result.map((r) => r.value), [9, 5]);
   assert.deepEqual(result.map((r) => r.index), [2, 0]);
+});
+
+test('sampleWeighted always returns the only candidate when there is one', () => {
+  const candidates = [{ index: 7, value: 0.5 }];
+  assert.deepEqual(sampleWeighted(candidates), candidates[0]);
+});
+
+test('sampleWeighted picks deterministically given a fixed rng', () => {
+  const candidates = [
+    { index: 0, value: 0.2 },
+    { index: 1, value: 0.3 },
+    { index: 2, value: 0.5 },
+  ];
+  // rng() = 0 always selects the first candidate whose cumulative share is reached.
+  assert.equal(sampleWeighted(candidates, () => 0).index, 0);
+  // rng() just past the first candidate's share (0.2) lands in the second.
+  assert.equal(sampleWeighted(candidates, () => 0.21).index, 1);
+  // rng() just past the first two candidates' combined share (0.5) lands in the third.
+  assert.equal(sampleWeighted(candidates, () => 0.51).index, 2);
+  // rng() near 1 still resolves to the last candidate, not undefined.
+  assert.equal(sampleWeighted(candidates, () => 0.999).index, 2);
+});
+
+test('sampleWeighted respects relative weight over many draws', () => {
+  const candidates = [
+    { index: 0, value: 0.9 },
+    { index: 1, value: 0.1 },
+  ];
+  let firstCount = 0;
+  const trials = 2000;
+  for (let i = 0; i < trials; i++) {
+    if (sampleWeighted(candidates).index === 0) firstCount++;
+  }
+  // With a 90/10 split, the heavy candidate should dominate but the light one
+  // should still occasionally win — this is the property that fixes greedy
+  // decoding's repetition loops. Allow a wide margin since this uses real
+  // Math.random, not a fixed rng.
+  assert.ok(firstCount > trials * 0.7, `expected >70% but got ${firstCount / trials}`);
+  assert.ok(firstCount < trials * 0.99, `expected <99% but got ${firstCount / trials}`);
 });
 
 test('attentionWeights: each row sums to 1 and is causally masked', () => {
