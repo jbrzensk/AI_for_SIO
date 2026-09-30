@@ -67,16 +67,43 @@ async function handleLoad() {
   }
 }
 
+// Grow the textarea to fit its content, so tokens appended by Step or a
+// candidate pick (including whitespace-only ones like a newline) are always
+// visible rather than scrolled out of a fixed two-row box.
+function autoGrowInput() {
+  const input = els.input;
+  input.style.height = 'auto';
+  input.style.height = `${input.scrollHeight + input.offsetHeight - input.clientHeight}px`;
+}
+
+// Disable/enable every button in the prediction panel (Step + the candidate
+// rows) so rapid clicks can't launch overlapping inference calls.
+function setPredictionButtonsDisabled(disabled) {
+  els.predictionSection.querySelectorAll('button').forEach((button) => {
+    button.disabled = disabled;
+  });
+}
+
+// Shared by Step (sampled index) and clicking a candidate (chosen index):
+// append that token's real text to the sequence and re-run.
+async function appendTokenAndRun(index) {
+  if (isRunning || !state.lastLogits) return;
+  els.input.value = state.currentText + modelApi.decodeTokenId(index);
+  autoGrowInput();
+  await handleRun();
+}
+
 function renderPredictionSection() {
   renderPrediction(els.predictionSection, {
     logits: state.lastLogits,
     decodeTokenId: modelApi.decodeTokenId,
     temperature: state.temperature,
+    disabled: isRunning,
     onTemperatureChange: (value) => {
       state.temperature = value;
       renderPredictionSection();
     },
-    onStep: async () => {
+    onStep: () => {
       if (!state.lastLogits) return;
       // Sample from the same top-5 candidates shown in the bars, weighted by
       // their temperature-adjusted probability — never always the single top
@@ -84,14 +111,15 @@ function renderPredictionSection() {
       // small model's next most likely token after one newline is often
       // another newline); weighted sampling gives lower-ranked candidates a
       // real (temperature-controlled) chance, which is also what the
-      // temperature slider is teaching in the first place.
+      // temperature slider is teaching in the first place. When the model is
+      // near-certain (e.g. 99.8% on another newline), sampling alone can't
+      // escape — that's what picking a candidate directly is for.
       const probs = softmaxWithTemperature(state.lastLogits, state.temperature);
       const candidates = topK(probs, 5);
       const { index } = sampleWeighted(candidates);
-      const nextText = modelApi.decodeTokenId(index);
-      els.input.value = state.currentText + nextText;
-      await handleRun();
+      return appendTokenAndRun(index);
     },
+    onPick: (index) => appendTokenAndRun(index),
   });
 }
 
@@ -102,11 +130,10 @@ async function handleRun() {
   const text = els.input.value;
   els.runButton.disabled = true;
   els.runButton.textContent = 'Running…';
-  // Disable the Step button (if it currently exists from a prior render) for
-  // the duration of this run, so rapid Step clicks can't launch overlapping
+  // Disable Step and the candidate rows (if they exist from a prior render)
+  // for the duration of this run, so rapid clicks can't launch overlapping
   // inference calls while we're awaiting the model below.
-  const existingStepButton = els.predictionSection.querySelector('.prediction-step-button');
-  if (existingStepButton) existingStepButton.disabled = true;
+  setPredictionButtonsDisabled(true);
   try {
     const { tokens, ids } = modelApi.tokenize(text);
     renderTokens(els.tokensSection, tokens, ids);
@@ -119,19 +146,25 @@ async function handleRun() {
   } catch (err) {
     console.error(err);
     showError('Something went wrong running the model. See the console for details.');
+    // Any predictions still on screen belong to the previous text, not the
+    // one this run failed on — a Step or pick would apply them to the wrong
+    // sequence. Drop them; renderPrediction falls back to its "Click Run..."
+    // placeholder (no Step/candidate buttons) until a run succeeds.
+    state.lastLogits = null;
+    renderPredictionSection();
   } finally {
     isRunning = false;
     els.runButton.textContent = 'Run';
     updateRunButtonState();
-    // Re-enable the Step button. On success this is a no-op (renderPredictionSection
-    // already built a fresh, enabled button); on failure this restores the button
-    // that was disabled above and never got rebuilt.
-    const stepButton = els.predictionSection.querySelector('.prediction-step-button');
-    if (stepButton) stepButton.disabled = false;
+    // Re-enable the fresh Step and candidate buttons a successful run just
+    // rendered (built disabled, since isRunning was still true). After a
+    // failure the panel was cleared above, so there's nothing to re-enable.
+    setPredictionButtonsDisabled(false);
   }
 }
 
 function handleInputChange() {
+  autoGrowInput();
   updateRunButtonState();
   // If the text no longer matches what the current predictions were computed
   // for, drop the stale predictions rather than let a Step silently discard
@@ -144,12 +177,43 @@ function handleInputChange() {
   }
 }
 
+// Retrying in-page after a failed download can never succeed: the browser
+// remembers a failed import() of the transformers.js URL, and transformers.js
+// 4.2.0 memoizes "does this model file exist?" for the life of the page —
+// with a network failure memoized as "no". So Retry reloads the page for a
+// clean slate and resumes the download automatically, keeping the sentence.
+const RETRY_STORAGE_KEY = 'module1-demo-retry-sentence';
+
+function handleRetry() {
+  try {
+    sessionStorage.setItem(RETRY_STORAGE_KEY, els.input.value);
+  } catch {
+    // Storage blocked: reload anyway; the learner just clicks Load again.
+  }
+  location.reload();
+}
+
+function resumeAfterRetry() {
+  let sentence = null;
+  try {
+    sentence = sessionStorage.getItem(RETRY_STORAGE_KEY);
+    sessionStorage.removeItem(RETRY_STORAGE_KEY);
+  } catch {
+    return;
+  }
+  if (sentence === null) return;
+  els.input.value = sentence;
+  autoGrowInput();
+  handleLoad();
+}
+
 if (typeof WebAssembly !== 'object') {
   els.unsupportedBanner.hidden = false;
   els.loadButton.disabled = true;
 } else {
   els.input.addEventListener('input', handleInputChange);
   els.loadButton.addEventListener('click', handleLoad);
-  els.retryButton.addEventListener('click', handleLoad);
+  els.retryButton.addEventListener('click', handleRetry);
   els.runButton.addEventListener('click', handleRun);
+  resumeAfterRetry();
 }
