@@ -89,8 +89,20 @@ Use when asked to turn raw/rough meeting notes into a distributable summary.
 - Do not invent action items that weren't discussed.
 
 ## Example
-Input: [raw notes]
-Output: [formatted summary matching the structure above]
+Input: "met w/ Ana + Raj. agreed to switch to 6-hourly output. someone
+should rerun the 1959 case. still unsure about zooplankton units"
+
+Output:
+- Attendees: Ana, Raj
+- Decisions: Switch model output to 6-hourly.
+- Action Items: Rerun the 1959 case (OWNER NEEDED)
+- Open Questions: What units are the zooplankton values in?
+
+## Edge cases
+- Someone mentioned without a task is not an action item — don't
+  create one for them.
+- If two people are named for one task, list both as owners; don't
+  pick one.
 ```
 
 ### Keeping skills portable across LLMs
