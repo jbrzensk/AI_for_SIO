@@ -167,6 +167,8 @@ checklist). Write a skill file for it using the four-part anatomy above.
 Then test it: open a fresh conversation, paste the skill, and give the
 model a real example of that task.
 
+Do this in [exercise.ipynb](exercise.ipynb).
+
 **Success looks like:** The model's output follows your stated rules
 without you re-explaining them in the prompt itself — and you can hand
 the same skill file to a labmate and get the same behavior.
