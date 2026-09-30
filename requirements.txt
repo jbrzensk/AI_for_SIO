@@ -1,0 +1,11 @@
+jupyter
+jupyterlab
+nbformat
+google-genai
+python-dotenv
+xarray
+dask[array]
+numpy
+netCDF4
+tiktoken
+pytest
