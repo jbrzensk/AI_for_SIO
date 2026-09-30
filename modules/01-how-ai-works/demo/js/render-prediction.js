@@ -1,7 +1,7 @@
 import { softmaxWithTemperature, topK } from './math.js';
 import { visibleLabel } from './visible-label.js';
 
-export function renderPrediction(container, { logits, decodeTokenId, temperature, onTemperatureChange, onStep }) {
+export function renderPrediction(container, { logits, decodeTokenId, temperature, disabled, onTemperatureChange, onStep, onPick }) {
   if (!logits) {
     container.innerHTML = '';
     container._predictionLogitsRef = null;
@@ -51,6 +51,12 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
 
     container.appendChild(controls);
 
+    const hint = document.createElement('p');
+    hint.className = 'prediction-hint';
+    hint.textContent =
+      'Click a candidate to choose the next token yourself, or press Step to let the model sample one.';
+    container.appendChild(hint);
+
     const list = document.createElement('div');
     list.className = 'prediction-bars';
     container.appendChild(list);
@@ -73,8 +79,14 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
   const top5 = topK(probs, 5);
 
   top5.forEach(({ index, value }) => {
-    const row = document.createElement('div');
+    // Each candidate is a real button so the learner can pick the next token
+    // themselves (by mouse or keyboard) — e.g. to escape a run of newlines
+    // that sampling alone would keep choosing.
+    const row = document.createElement('button');
+    row.type = 'button';
     row.className = 'prediction-row';
+    row.disabled = Boolean(disabled);
+    row.addEventListener('click', () => onPick(index));
 
     const label = document.createElement('span');
     label.className = 'prediction-token';
