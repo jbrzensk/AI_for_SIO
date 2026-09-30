@@ -38,7 +38,7 @@
   - `topK(values: ArrayLike<number>, k: number): { index: number, value: number }[]` — descending by value.
   - `attentionWeights(tokens: string[]): number[][]` — causally-masked (row `i`, col `j`, zero for `j > i`), each row sums to 1.
 
-- [ ] **Step 1: Create the Node module config**
+- [x] **Step 1: Create the Node module config**
 
 `modules/01-how-ai-works/demo/package.json`:
 ```json
@@ -48,7 +48,7 @@
 }
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 `modules/01-how-ai-works/demo/js/math.test.js`:
 ```js
@@ -130,12 +130,12 @@ test('attentionWeights: a repeated token gets boosted weight from its earlier oc
 });
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `node --test modules/01-how-ai-works/demo/js/math.test.js`
 Expected: FAIL — `Cannot find module './math.js'` (or similar), since `math.js` doesn't exist yet.
 
-- [ ] **Step 4: Implement `math.js`**
+- [x] **Step 4: Implement `math.js`**
 
 `modules/01-how-ai-works/demo/js/math.js`:
 ```js
@@ -239,12 +239,12 @@ export function attentionWeights(tokens) {
 }
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `node --test modules/01-how-ai-works/demo/js/math.test.js`
 Expected: PASS — all 11 tests green.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/package.json modules/01-how-ai-works/demo/js/math.js modules/01-how-ai-works/demo/js/math.test.js
@@ -264,7 +264,7 @@ git commit -m "Add pure pipeline math module for module 1 demo, with unit tests"
 - Consumes: none yet (model.js doesn't exist until Task 3).
 - Produces: the DOM element ids every later task's `main.js` additions and render modules rely on: `sentence-input`, `load-button`, `run-button`, `load-progress`, `load-status`, `retry-button`, `error-banner`, `unsupported-banner`, `tokens-section`, `embeddings-section`, `attention-section`, `prediction-section`.
 
-- [ ] **Step 1: Write `index.html`**
+- [x] **Step 1: Write `index.html`**
 
 `modules/01-how-ai-works/demo/index.html`:
 ```html
@@ -334,7 +334,7 @@ git commit -m "Add pure pipeline math module for module 1 demo, with unit tests"
 </html>
 ```
 
-- [ ] **Step 2: Write `style.css`**
+- [x] **Step 2: Write `style.css`**
 
 `modules/01-how-ai-works/demo/style.css`:
 ```css
@@ -519,7 +519,7 @@ section {
 }
 ```
 
-- [ ] **Step 3: Write the bootstrap `main.js`**
+- [x] **Step 3: Write the bootstrap `main.js`**
 
 `modules/01-how-ai-works/demo/js/main.js`:
 ```js
@@ -550,7 +550,7 @@ if (typeof WebAssembly !== 'object') {
 }
 ```
 
-- [ ] **Step 4: Manually verify in a browser**
+- [x] **Step 4: Manually verify in a browser**
 
 Run: `cd modules/01-how-ai-works/demo && python3 -m http.server 8000`, open `http://localhost:8000/`.
 
@@ -561,7 +561,7 @@ Expected:
 - Progress bar, error banner, retry button, and unsupported banner are all hidden.
 - In devtools console, run `document.getElementById('unsupported-banner').hidden = false` — banner becomes visible and styled correctly (manual check of the render path, since real WASM-lacking browsers aren't available to test against directly).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/index.html modules/01-how-ai-works/demo/style.css modules/01-how-ai-works/demo/js/main.js
@@ -583,7 +583,7 @@ git commit -m "Add module 1 demo page shell"
   - `model.js`: `isReady(): boolean`, `loadModel(onProgress: (percent: number) => void): Promise<void>`, `tokenize(text: string): { tokens: string[], ids: number[] }`, `predictNextTokenLogits(text: string): Promise<Float32Array>`, `decodeTokenId(id: number): string`.
   - `render-tokens.js`: `renderTokens(container: HTMLElement, tokens: string[], ids: number[]): void`.
 
-- [ ] **Step 1: Implement `model.js`**
+- [x] **Step 1: Implement `model.js`**
 
 `modules/01-how-ai-works/demo/js/model.js`:
 ```js
@@ -637,7 +637,7 @@ export function decodeTokenId(id) {
 }
 ```
 
-- [ ] **Step 2: Implement `render-tokens.js`**
+- [x] **Step 2: Implement `render-tokens.js`**
 
 `modules/01-how-ai-works/demo/js/render-tokens.js`:
 ```js
@@ -665,7 +665,7 @@ export function renderTokens(container, tokens, ids) {
 }
 ```
 
-- [ ] **Step 3: Wire loading + tokenize-on-run into `main.js`**
+- [x] **Step 3: Wire loading + tokenize-on-run into `main.js`**
 
 Replace the full contents of `modules/01-how-ai-works/demo/js/main.js` with:
 ```js
@@ -751,7 +751,7 @@ if (typeof WebAssembly !== 'object') {
 }
 ```
 
-- [ ] **Step 4: Manually verify in a browser**
+- [x] **Step 4: Manually verify in a browser**
 
 Run: `cd modules/01-how-ai-works/demo && python3 -m http.server 8000`, open `http://localhost:8000/`.
 
@@ -761,7 +761,7 @@ Expected:
 - Click "Run" with "What color is the sky?" in the box → token chips appear, each showing real BPE token text (e.g. `What`, ` color`, ` is`, ` the`, ` sky`, `?`) and its real integer id.
 - Open devtools Network tab, throttle to "Offline", reload, click "Load the model" → error banner appears with the retry message, Retry button is visible; switch back online and click Retry → succeeds.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/js/model.js modules/01-how-ai-works/demo/js/render-tokens.js modules/01-how-ai-works/demo/js/main.js
@@ -780,7 +780,7 @@ git commit -m "Load distilgpt2 via transformers.js and render real tokens"
 - Consumes: `math.js`'s `softmaxWithTemperature`/`topK` (Task 1), `model.js`'s `predictNextTokenLogits`/`decodeTokenId` (Task 3).
 - Produces: `render-prediction.js`: `renderPrediction(container: HTMLElement, { logits: Float32Array|null, decodeTokenId: (id:number)=>string, temperature: number, onTemperatureChange: (t:number)=>void, onStep: ()=>void }): void`.
 
-- [ ] **Step 1: Implement `render-prediction.js`**
+- [x] **Step 1: Implement `render-prediction.js`**
 
 `modules/01-how-ai-works/demo/js/render-prediction.js`:
 ```js
@@ -850,7 +850,7 @@ export function renderPrediction(container, { logits, decodeTokenId, temperature
 }
 ```
 
-- [ ] **Step 2: Wire prediction + temperature + step into `main.js`**
+- [x] **Step 2: Wire prediction + temperature + step into `main.js`**
 
 In `modules/01-how-ai-works/demo/js/main.js`:
 
@@ -916,7 +916,7 @@ async function handleRun() {
 }
 ```
 
-- [ ] **Step 3: Manually verify in a browser**
+- [x] **Step 3: Manually verify in a browser**
 
 Run: `cd modules/01-how-ai-works/demo && python3 -m http.server 8000`, open `http://localhost:8000/`.
 
@@ -925,7 +925,7 @@ Expected:
 - Drag the temperature slider → bars re-render live (higher temperature flattens the bars, lower temperature sharpens them), without re-running the model (should be instant, no network/compute delay).
 - Click "Step: accept top token and continue" repeatedly → the input box grows with each accepted token, tokens/prediction panels refresh each time, generation stays coherent for at least a few steps.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/js/render-prediction.js modules/01-how-ai-works/demo/js/main.js
@@ -944,7 +944,7 @@ git commit -m "Add real autoregressive next-token prediction with temperature an
 - Consumes: `math.js`'s `hashEmbedding`/`project2D` (Task 1).
 - Produces: `render-embeddings.js`: `renderEmbeddings(container: HTMLElement, tokens: string[]): void`.
 
-- [ ] **Step 1: Implement `render-embeddings.js`**
+- [x] **Step 1: Implement `render-embeddings.js`**
 
 `modules/01-how-ai-works/demo/js/render-embeddings.js`:
 ```js
@@ -1031,7 +1031,7 @@ export function renderEmbeddings(container, tokens) {
 }
 ```
 
-- [ ] **Step 2: Wire it into `main.js`**
+- [x] **Step 2: Wire it into `main.js`**
 
 Add to the imports at the top of `modules/01-how-ai-works/demo/js/main.js`:
 ```js
@@ -1045,7 +1045,7 @@ In `handleRun`, add the call right after the existing `renderTokens(...)` line:
     renderEmbeddings(els.embeddingsSection, tokens);
 ```
 
-- [ ] **Step 3: Manually verify in a browser**
+- [x] **Step 3: Manually verify in a browser**
 
 Run: `cd modules/01-how-ai-works/demo && python3 -m http.server 8000`, open `http://localhost:8000/`.
 
@@ -1053,7 +1053,7 @@ Expected:
 - Click Run → Embeddings panel shows the italic illustrative caption, one color-coded strip per token, an SVG scatter plot with each token's text positioned in it, and a "Most similar pair" line underneath.
 - Type a sentence with a repeated word (e.g. "the cat sat near the cat") and click Run → the two occurrences of "cat" and "the" land at or very near the same point in the plot, and the "Most similar pair" line calls out one of those repeated-word pairs with a similarity score near 1.00 (since `hashEmbedding` is deterministic per exact token text).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/js/render-embeddings.js modules/01-how-ai-works/demo/js/main.js
@@ -1072,7 +1072,7 @@ git commit -m "Add illustrative embeddings panel to module 1 demo"
 - Consumes: `math.js`'s `attentionWeights` (Task 1).
 - Produces: `render-attention.js`: `renderAttention(container: HTMLElement, tokens: string[]): void`.
 
-- [ ] **Step 1: Implement `render-attention.js`**
+- [x] **Step 1: Implement `render-attention.js`**
 
 `modules/01-how-ai-works/demo/js/render-attention.js`:
 ```js
@@ -1123,7 +1123,7 @@ export function renderAttention(container, tokens) {
 }
 ```
 
-- [ ] **Step 2: Wire it into `main.js`**
+- [x] **Step 2: Wire it into `main.js`**
 
 Add to the imports at the top of `modules/01-how-ai-works/demo/js/main.js`:
 ```js
@@ -1136,7 +1136,7 @@ In `handleRun`, add the call right after `renderEmbeddings(...)`:
     renderAttention(els.attentionSection, tokens);
 ```
 
-- [ ] **Step 3: Manually verify in a browser**
+- [x] **Step 3: Manually verify in a browser**
 
 Run: `cd modules/01-how-ai-works/demo && python3 -m http.server 8000`, open `http://localhost:8000/`.
 
@@ -1144,7 +1144,7 @@ Expected:
 - Click Run → Attention panel shows the italic illustrative caption and a token-by-token heatmap table; cells above the diagonal (later tokens attending to earlier ones is fine, but earlier tokens should show nothing for later columns) are blank, confirming the causal mask.
 - Type "the cat sat near the cat" and click Run → the last row ("cat") shows a visibly darker cell under the earlier "cat" column than under neighboring non-repeated columns, reflecting the repetition heuristic.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add modules/01-how-ai-works/demo/js/render-attention.js modules/01-how-ai-works/demo/js/main.js
@@ -1160,33 +1160,35 @@ git commit -m "Add illustrative attention panel to module 1 demo"
 
 **Interfaces:** none new — this task exercises the full assembled app from Tasks 2-6.
 
-- [ ] **Step 1: Verify empty-input handling**
+- [x] **Step 1: Verify empty-input handling**
 
 In the browser, load the model, then clear the input box entirely.
 Expected: Run button becomes disabled immediately (no need to click anything else).
 
-- [ ] **Step 2: Verify slow/in-flight state doesn't look hung**
+- [x] **Step 2: Verify slow/in-flight state doesn't look hung**
 
 With the model loaded, click Run.
 Expected: Run button text changes to "Running…" and the button is disabled for the (brief) duration of tokenize + predict, then returns to "Run" and re-enables.
 
-- [ ] **Step 3: Verify download failure + retry**
+- [x] **Step 3: Verify download failure + retry**
 
 In devtools, open the Network tab, set throttling to "Offline". Reload the page and click "Load the model".
 Expected: error banner reads "Could not download the model. Check your connection and retry.", the Retry button is visible, the Load button is re-enabled (not stuck disabled).
 Then set throttling back to "No throttling" (or "Online") and click Retry.
 Expected: loads successfully, error banner clears, progress bar completes, Run enables.
 
-- [ ] **Step 4: Verify the unsupported-browser path renders correctly**
+- [x] **Step 4: Verify the unsupported-browser path renders correctly**
 
 In devtools console: `document.getElementById('unsupported-banner').hidden = false`.
 Expected: banner is visible with readable styling in both light and dark OS theme (toggle OS/browser dark mode and reload to check the dark-mode CSS variables from Task 2's `style.css`).
 
-- [ ] **Step 5: Fix anything broken**
+- [x] **Step 5: Fix anything broken**
 
 If any of Steps 1-4 fail, fix the relevant code in `main.js` (the logic for all four cases was written in Tasks 2-4; this task is the first point at which they're exercised against the fully-assembled app). Re-run the failing step until it passes. If no fixes were needed, skip the commit in Step 6.
 
-- [ ] **Step 6: Commit (only if Step 5 required changes)**
+> **Done 2026-09-30:** Step 3 failed — Retry could never recover in-page, because the browser caches a failed `import()` of the transformers.js URL and transformers.js 4.2.0 memoizes a network failure as "model file doesn't exist" for the life of the page. Fixed in `main.js`: Retry now reloads the page and resumes the download automatically, keeping the typed sentence. Steps 1–4 re-verified in headless Chrome (offline, and model-host-only blocked), along with the dark-mode banner.
+
+- [x] **Step 6: Commit (only if Step 5 required changes)**
 
 ```bash
 git add modules/01-how-ai-works/demo/js/main.js
@@ -1202,7 +1204,7 @@ git commit -m "Fix edge-case handling found during module 1 demo verification pa
 
 **Interfaces:** none — documentation and hosting only.
 
-- [ ] **Step 1: Add a "Try it" section to the module README**
+- [x] **Step 1: Add a "Try it" section to the module README**
 
 In `modules/01-how-ai-works/README.md`, add this section right after the "## Hands-on exercise" section (before "## Key takeaways"):
 ```markdown
@@ -1220,11 +1222,11 @@ First load takes a one-time ~100-300MB download (cached by your browser
 afterward). No data leaves your browser — everything runs locally.
 ```
 
-- [ ] **Step 2: Enable GitHub Pages — requires the repo owner's confirmation**
+- [x] **Step 2: Enable GitHub Pages — requires the repo owner's confirmation**
 
 This is a repository-visibility setting change (it makes the repo's static files reachable at a public URL) and should be done by the repo owner, not automated silently. In the GitHub web UI: **Settings → Pages → Source: "Deploy from a branch" → Branch: `main`, folder: `/ (root)` → Save.** GitHub will publish at `https://jbrzensk.github.io/AI_for_SIO/` within a few minutes; confirm the demo is reachable at `https://jbrzensk.github.io/AI_for_SIO/modules/01-how-ai-works/demo/`.
 
-- [ ] **Step 3: Full golden-path walkthrough on the published Pages URL**
+- [x] **Step 3: Full golden-path walkthrough on the published Pages URL**
 
 Once Pages is live, open the real published URL (not localhost) and repeat:
 - Load the model → progress completes → Run enables.
@@ -1233,7 +1235,7 @@ Once Pages is live, open the real published URL (not localhost) and repeat:
 - Click Step three or four times → generation continues and the input box grows accordingly.
 - Confirm both illustrative panels show their captions on the live page (not just localhost).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add modules/01-how-ai-works/README.md
