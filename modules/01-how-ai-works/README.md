@@ -150,6 +150,8 @@ without giving it source material. Then ask it to cite its sources. Then
 identify: was the task you gave it deductive, inductive, or abductive in
 nature?
 
+Do this in [exercise.ipynb](exercise.ipynb).
+
 **Success looks like:** You can point to at least one specific claim or
 citation in the response that is either fabricated, subtly wrong, or that
 the model can't actually substantiate — and you can explain *why* that
