@@ -171,12 +171,43 @@ function handleInputChange() {
   }
 }
 
+// Retrying in-page after a failed download can never succeed: the browser
+// remembers a failed import() of the transformers.js URL, and transformers.js
+// 4.2.0 memoizes "does this model file exist?" for the life of the page —
+// with a network failure memoized as "no". So Retry reloads the page for a
+// clean slate and resumes the download automatically, keeping the sentence.
+const RETRY_STORAGE_KEY = 'module1-demo-retry-sentence';
+
+function handleRetry() {
+  try {
+    sessionStorage.setItem(RETRY_STORAGE_KEY, els.input.value);
+  } catch {
+    // Storage blocked: reload anyway; the learner just clicks Load again.
+  }
+  location.reload();
+}
+
+function resumeAfterRetry() {
+  let sentence = null;
+  try {
+    sentence = sessionStorage.getItem(RETRY_STORAGE_KEY);
+    sessionStorage.removeItem(RETRY_STORAGE_KEY);
+  } catch {
+    return;
+  }
+  if (sentence === null) return;
+  els.input.value = sentence;
+  autoGrowInput();
+  handleLoad();
+}
+
 if (typeof WebAssembly !== 'object') {
   els.unsupportedBanner.hidden = false;
   els.loadButton.disabled = true;
 } else {
   els.input.addEventListener('input', handleInputChange);
   els.loadButton.addEventListener('click', handleLoad);
-  els.retryButton.addEventListener('click', handleLoad);
+  els.retryButton.addEventListener('click', handleRetry);
   els.runButton.addEventListener('click', handleRun);
+  resumeAfterRetry();
 }
