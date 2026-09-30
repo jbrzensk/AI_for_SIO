@@ -9,3 +9,4 @@ numpy
 netCDF4
 tiktoken
 pytest
+httpx

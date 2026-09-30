@@ -1,6 +1,7 @@
 import json
 import os
 
+import httpx
 from dotenv import load_dotenv
 from google import genai
 from google.genai import errors, types
@@ -57,6 +58,11 @@ def grade(question: str, rubric: str, answer: str) -> dict:
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=_RESPONSE_SCHEMA,
+                # No tools are used; leaving this on makes the SDK print a
+                # confusing warning into the learner's notebook.
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                    disable=True
+                ),
             ),
         )
     except errors.APIError as exc:
@@ -66,10 +72,15 @@ def grade(question: str, rubric: str, answer: str) -> dict:
             ".env file (get a free key at https://aistudio.google.com/apikey) "
             "and restart the notebook kernel."
         ) from exc
+    except httpx.HTTPError as exc:
+        raise GradingError(
+            f"Couldn't reach the grading service ({exc}). Check your internet "
+            "connection and run the cell again."
+        ) from exc
     try:
         result = json.loads(response.text)
-    except (json.JSONDecodeError, TypeError) as exc:
+        return {"pass": bool(result["pass"]), "feedback": str(result["feedback"])}
+    except (json.JSONDecodeError, TypeError, KeyError) as exc:
         raise GradingError(
             f"Grader returned an unparseable response: {response.text!r}"
         ) from exc
-    return {"pass": bool(result["pass"]), "feedback": str(result["feedback"])}
