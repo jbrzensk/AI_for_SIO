@@ -594,7 +594,7 @@ In `modules/01-how-ai-works/README.md`, in the "## Hands-on exercise" section, a
 Do this in [exercise.ipynb](exercise.ipynb).
 ```
 
-- [ ] **Step 4: Manual end-to-end check (requires a real API key)**
+- [x] **Step 4: Manual end-to-end check (requires a real API key)**
 
 If a `GOOGLE_API_KEY` is available in this environment: open the notebook, fill in `question_you_asked`/`ai_answer`/`your_analysis` with a real worked example (once with a genuinely correct analysis, once with an obviously wrong one), run all cells, and confirm `grade()` returns `PASS`/`NEEDS WORK` sensibly for each. If no key is available, skip execution and note in your task summary that this manual check is still needed from the user before merging.
 
@@ -697,7 +697,7 @@ In `modules/02-prompt-engineering/README.md`, in the "## Hands-on exercise" sect
 Do this in [exercise.ipynb](exercise.ipynb).
 ```
 
-- [ ] **Step 4: Manual end-to-end check (requires a real API key)**
+- [x] **Step 4: Manual end-to-end check (requires a real API key)**
 
 If a `GOOGLE_API_KEY` is available: fill in `rewritten_prompt` once with the README's own "strong version" example (expect `PASS`) and once with the README's "weak" example, `"Explain this model output."` (expect `NEEDS WORK`), running the grading cell each time. If no key is available, skip and note the pending manual check.
 
@@ -799,7 +799,7 @@ In `modules/03-skills-use-and-building/README.md`, in the "## Hands-on exercise"
 Do this in [exercise.ipynb](exercise.ipynb).
 ```
 
-- [ ] **Step 4: Manual end-to-end check (requires a real API key)**
+- [x] **Step 4: Manual end-to-end check (requires a real API key)**
 
 If a `GOOGLE_API_KEY` is available: paste the README's own "Minimal example" skill file (the Lab Meeting Notes Formatting one) into `skill_file_text` — expect `PASS`. Then try a skill file text with a section missing (e.g. no Edge cases) — expect `NEEDS WORK`. If no key is available, skip and note the pending manual check.
 
@@ -1059,7 +1059,7 @@ In `modules/04-coding-practices/README.md`, in the "## Hands-on exercise" sectio
 Do this in [exercise.ipynb](exercise.ipynb).
 ```
 
-- [ ] **Step 5: Manual end-to-end check (requires a real API key)**
+- [x] **Step 5: Manual end-to-end check (requires a real API key)**
 
 If a `GOOGLE_API_KEY` is available: fill in `explanation` once with a correct explanation mentioning eager computation/memory (expect `PASS`) and once with an unrelated or vague explanation (expect `NEEDS WORK`). If no key is available, skip and note the pending manual check.
 
@@ -1074,7 +1074,7 @@ git commit -m "Add interactive exercise notebook to module 04"
 
 ## Execution notes (2026-09-30)
 
-Executed inline on branch `feature/interactive-notebooks`. All steps are done except the four manual end-to-end checks (Tasks 5–8), which need a real `GOOGLE_API_KEY` that wasn't available while this plan was executed. Deviations from the plan text above:
+Executed inline on branch `feature/interactive-notebooks`. All steps are done, including the four manual end-to-end checks (Tasks 5–8), run against the live Gemini API: 9 of 9 good/bad sample answers graded as expected. Deviations from the plan text above:
 
 - **Task 2, model:** `MODEL_NAME = "gemini-3.5-flash-lite"`, not `gemini-2.0-flash`. Gemini 2.0 Flash was shut down on 2026-06-01, and the 2.5 models are closed to new accounts. Changing models later is a one-line edit.
 - **Task 2, invalid key:** the spec requires a clear error for a missing *or invalid* key. `grade()` now wraps Gemini API errors in `GradingError` with setup guidance, covered by a fourth test (`test_grade_raises_clear_error_when_api_rejects_key`).
@@ -1082,3 +1082,6 @@ Executed inline on branch `feature/interactive-notebooks`. All steps are done ex
 - **Tasks 5–8:** each README pointer is its own paragraph after the Task paragraph, not inserted mid-paragraph.
 - **Final review, fix 1:** per the spec, each notebook's `question`/`rubric` lives in a locked cell (`editable`/`deletable` false) right after the import cell, instead of an editable cell at the bottom. CONTRIBUTING describes this layout.
 - **Final review, fix 2:** README Setup creates and activates a `.venv` before `pip install`, because a bare `pip install` fails on Ubuntu 24.04, Debian 12 and Homebrew Python (PEP 668).
+- **Manual check, module 03:** the plan expected the README's "Minimal example" skill to PASS, but it had no Edge cases section and only placeholder input/output, so the grader correctly marked it NEEDS WORK. The example now has a worked example and edge cases, and grades PASS.
+- **Ported from the earlier, unmerged `worktree-interactive-modules` attempt (now deleted):** network failures and replies missing a field raise `GradingError`; the module 03/04 README pointers say what the notebook covers; module 01's placeholder asks why the reasoning mode applies. Automatic function calling is also turned off, which stops the SDK printing a confusing warning into notebooks.
+- **Consistency:** `grade()` runs at `temperature=0`, and the module 02 rubric no longer contradicts itself. It used to say both "pass only if all four parts" and "fail if two or more are missing", so the README's strong prompt, which lacks explicit boundaries, flipped between PASS and NEEDS WORK (4 of 5 PASS, even at temperature 0). It now says: pass with three of four parts, and name the missing one. 5 of 5 PASS afterwards, while prompts missing two parts still fail.
