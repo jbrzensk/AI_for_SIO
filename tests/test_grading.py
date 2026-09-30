@@ -141,3 +141,27 @@ def test_grade_disables_automatic_function_calling(monkeypatch):
 
     afc = sent["config"].automatic_function_calling
     assert afc is not None and afc.disable is True
+
+
+def test_grade_uses_zero_temperature_for_consistent_verdicts(monkeypatch):
+    # At the default temperature the same borderline answer was graded PASS
+    # 4 times and NEEDS WORK once in 5 live runs; at 0 it was 5/5 PASS.
+    monkeypatch.setenv("GOOGLE_API_KEY", "fake-key-for-test")
+    sent = {}
+
+    class FakeResponse:
+        text = '{"pass": true, "feedback": "ok"}'
+
+    class FakeModels:
+        def generate_content(self, model, contents, config):
+            sent["config"] = config
+            return FakeResponse()
+
+    class FakeClient:
+        models = FakeModels()
+
+    monkeypatch.setattr(grading, "_get_client", lambda: FakeClient())
+
+    grading.grade("question", "rubric", "answer")
+
+    assert sent["config"].temperature == 0

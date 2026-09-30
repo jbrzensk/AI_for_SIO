@@ -58,6 +58,9 @@ def grade(question: str, rubric: str, answer: str) -> dict:
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=_RESPONSE_SCHEMA,
+                # Same answer, same verdict: sampling at the default
+                # temperature flipped borderline answers between runs.
+                temperature=0,
                 # No tools are used; leaving this on makes the SDK print a
                 # confusing warning into the learner's notebook.
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(
