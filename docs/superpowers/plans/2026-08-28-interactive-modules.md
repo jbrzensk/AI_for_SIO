@@ -56,7 +56,7 @@ modules/04-coding-practices/README.md        # modified — one-line pointer
 **Interfaces:**
 - Produces: an installable environment providing `jupyter`, `jupyterlab`, `google-genai`, `python-dotenv`, `nbformat`, `xarray`, `dask[array]`, `numpy`, `netCDF4`, `tiktoken`, `pytest` — every later task depends on these being installed.
 
-- [ ] **Step 1: Create `requirements.txt`**
+- [x] **Step 1: Create `requirements.txt`**
 
 ```text
 jupyter
@@ -72,13 +72,13 @@ tiktoken
 pytest
 ```
 
-- [ ] **Step 2: Create `.env.example`**
+- [x] **Step 2: Create `.env.example`**
 
 ```text
 GOOGLE_API_KEY=
 ```
 
-- [ ] **Step 3: Create `.gitignore`**
+- [x] **Step 3: Create `.gitignore`**
 
 ```text
 .env
@@ -88,7 +88,7 @@ __pycache__/
 *.pyc
 ```
 
-- [ ] **Step 4: Verify the requirements file installs cleanly**
+- [x] **Step 4: Verify the requirements file installs cleanly**
 
 Run:
 ```bash
@@ -98,7 +98,7 @@ pip install -r requirements.txt
 ```
 Expected: install completes with no errors. `.venv/` now holds all dependencies. Shell state does not persist between separate commands, so every subsequent Run step in this plan that needs an installed package starts with `source .venv/bin/activate` again.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add requirements.txt .env.example .gitignore
@@ -118,14 +118,14 @@ git commit -m "Add project dependencies, env template, and gitignore for interac
 - Consumes: `google-genai`, `python-dotenv` (Task 1).
 - Produces: `grading.grade(question: str, rubric: str, answer: str) -> dict` returning `{"pass": bool, "feedback": str}`; `grading.GradingError` exception. Every module notebook (Tasks 3, 5-8) imports `grade` from this module.
 
-- [ ] **Step 1: Create `conftest.py` at repo root**
+- [x] **Step 1: Create `conftest.py` at repo root**
 
 ```python
 # Empty on purpose: its presence makes pytest add the repo root to
 # sys.path, so tests/test_grading.py can `import grading`.
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/test_grading.py`:
 
@@ -184,12 +184,12 @@ def test_grade_raises_grading_error_on_unparseable_response(monkeypatch):
         grading.grade("question", "rubric", "answer")
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [x] **Step 3: Run tests to verify they fail**
 
 Run: `source .venv/bin/activate && pytest tests/test_grading.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'grading'` (the module doesn't exist yet).
 
-- [ ] **Step 4: Implement `grading.py`**
+- [x] **Step 4: Implement `grading.py`**
 
 ```python
 import json
@@ -260,12 +260,12 @@ def grade(question: str, rubric: str, answer: str) -> dict:
     return {"pass": bool(result["pass"]), "feedback": str(result["feedback"])}
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `source .venv/bin/activate && pytest tests/test_grading.py -v`
 Expected: 3 passed.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add conftest.py grading.py tests/test_grading.py
@@ -283,7 +283,7 @@ git commit -m "Add shared LLM-judge grading module with unit tests"
 - Consumes: `grading.grade` (Task 2).
 - Produces: the boilerplate cell pattern (sys.path insert + `from grading import grade`) that every module notebook (Tasks 5-8) copies.
 
-- [ ] **Step 1: Write the notebook builder and run it**
+- [x] **Step 1: Write the notebook builder and run it**
 
 Run:
 ```bash
@@ -347,12 +347,12 @@ with open("modules/_template/exercise.ipynb", "w") as f:
 PYEOF
 ```
 
-- [ ] **Step 2: Verify the notebook is valid**
+- [x] **Step 2: Verify the notebook is valid**
 
 Run: `source .venv/bin/activate && python3 -c "import nbformat; nb = nbformat.read('modules/_template/exercise.ipynb', as_version=4); nbformat.validate(nb); print('valid')"`
 Expected: prints `valid`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add modules/_template/exercise.ipynb
@@ -370,7 +370,7 @@ git commit -m "Add skeleton exercise notebook to the module template"
 **Interfaces:**
 - Consumes: nothing code-level; documents the pattern established in Tasks 1-3.
 
-- [ ] **Step 1: Add a Setup section to `README.md`**
+- [x] **Step 1: Add a Setup section to `README.md`**
 
 Insert a new section after "How this repo is organized" (before "Learning path"):
 
@@ -395,7 +395,7 @@ you already have access to — the API key above is only used internally
 to grade your answers, not to run the exercises.
 ```
 
-- [ ] **Step 2: Update the module table row description in `README.md`**
+- [x] **Step 2: Update the module table row description in `README.md`**
 
 Find the "Learning path (current modules)" table and its preceding line. Add one sentence directly above the table:
 
@@ -404,7 +404,7 @@ Each module's `README.md` covers the concept; open its `exercise.ipynb`
 for the hands-on part with automated feedback.
 ```
 
-- [ ] **Step 3: Update `CONTRIBUTING.md`'s module-creation steps**
+- [x] **Step 3: Update `CONTRIBUTING.md`'s module-creation steps**
 
 In the "## 1. Copy the template" section, change the copy command's surrounding text to mention the notebook, and add a new step after "## 2. Fill in the template sections":
 
@@ -443,7 +443,7 @@ Edit the copied `exercise.ipynb`:
   the notebook: `Do this in [exercise.ipynb](exercise.ipynb).`
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add README.md CONTRIBUTING.md
@@ -461,7 +461,7 @@ git commit -m "Document the exercise-notebook pattern in README and CONTRIBUTING
 **Interfaces:**
 - Consumes: `grading.grade` (Task 2), `tiktoken` (Task 1).
 
-- [ ] **Step 1: Write the notebook builder and run it**
+- [x] **Step 1: Write the notebook builder and run it**
 
 Run:
 ```bash
@@ -572,7 +572,7 @@ with open("modules/01-how-ai-works/exercise.ipynb", "w") as f:
 PYEOF
 ```
 
-- [ ] **Step 2: Verify the notebook is valid and the deterministic cell runs**
+- [x] **Step 2: Verify the notebook is valid and the deterministic cell runs**
 
 Run:
 ```bash
@@ -586,7 +586,7 @@ print(encoding.encode('What color is the sky?'))
 ```
 Expected: `valid`, followed by a list of integer token IDs (confirms `tiktoken` and the tokenization demo logic work).
 
-- [ ] **Step 3: Add the notebook pointer to the README**
+- [x] **Step 3: Add the notebook pointer to the README**
 
 In `modules/01-how-ai-works/README.md`, in the "## Hands-on exercise" section, add this line directly under the `**Task:**` line:
 
@@ -598,7 +598,7 @@ Do this in [exercise.ipynb](exercise.ipynb).
 
 If a `GOOGLE_API_KEY` is available in this environment: open the notebook, fill in `question_you_asked`/`ai_answer`/`your_analysis` with a real worked example (once with a genuinely correct analysis, once with an obviously wrong one), run all cells, and confirm `grade()` returns `PASS`/`NEEDS WORK` sensibly for each. If no key is available, skip execution and note in your task summary that this manual check is still needed from the user before merging.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/01-how-ai-works/exercise.ipynb modules/01-how-ai-works/README.md
@@ -616,7 +616,7 @@ git commit -m "Add interactive exercise notebook to module 01"
 **Interfaces:**
 - Consumes: `grading.grade` (Task 2).
 
-- [ ] **Step 1: Write the notebook builder and run it**
+- [x] **Step 1: Write the notebook builder and run it**
 
 Run:
 ```bash
@@ -684,12 +684,12 @@ with open("modules/02-prompt-engineering/exercise.ipynb", "w") as f:
 PYEOF
 ```
 
-- [ ] **Step 2: Verify the notebook is valid**
+- [x] **Step 2: Verify the notebook is valid**
 
 Run: `source .venv/bin/activate && python3 -c "import nbformat; nb = nbformat.read('modules/02-prompt-engineering/exercise.ipynb', as_version=4); nbformat.validate(nb); print('valid')"`
 Expected: prints `valid`.
 
-- [ ] **Step 3: Add the notebook pointer to the README**
+- [x] **Step 3: Add the notebook pointer to the README**
 
 In `modules/02-prompt-engineering/README.md`, in the "## Hands-on exercise" section, add directly under the `**Task — repair the prompt:**` line:
 
@@ -701,7 +701,7 @@ Do this in [exercise.ipynb](exercise.ipynb).
 
 If a `GOOGLE_API_KEY` is available: fill in `rewritten_prompt` once with the README's own "strong version" example (expect `PASS`) and once with the README's "weak" example, `"Explain this model output."` (expect `NEEDS WORK`), running the grading cell each time. If no key is available, skip and note the pending manual check.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/02-prompt-engineering/exercise.ipynb modules/02-prompt-engineering/README.md
@@ -719,7 +719,7 @@ git commit -m "Add interactive exercise notebook to module 02"
 **Interfaces:**
 - Consumes: `grading.grade` (Task 2).
 
-- [ ] **Step 1: Write the notebook builder and run it**
+- [x] **Step 1: Write the notebook builder and run it**
 
 Run:
 ```bash
@@ -786,12 +786,12 @@ with open("modules/03-skills-use-and-building/exercise.ipynb", "w") as f:
 PYEOF
 ```
 
-- [ ] **Step 2: Verify the notebook is valid**
+- [x] **Step 2: Verify the notebook is valid**
 
 Run: `source .venv/bin/activate && python3 -c "import nbformat; nb = nbformat.read('modules/03-skills-use-and-building/exercise.ipynb', as_version=4); nbformat.validate(nb); print('valid')"`
 Expected: prints `valid`.
 
-- [ ] **Step 3: Add the notebook pointer to the README**
+- [x] **Step 3: Add the notebook pointer to the README**
 
 In `modules/03-skills-use-and-building/README.md`, in the "## Hands-on exercise" section, add directly under the `**Task:**` line:
 
@@ -803,7 +803,7 @@ Do this in [exercise.ipynb](exercise.ipynb).
 
 If a `GOOGLE_API_KEY` is available: paste the README's own "Minimal example" skill file (the Lab Meeting Notes Formatting one) into `skill_file_text` — expect `PASS`. Then try a skill file text with a section missing (e.g. no Edge cases) — expect `NEEDS WORK`. If no key is available, skip and note the pending manual check.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/03-skills-use-and-building/exercise.ipynb modules/03-skills-use-and-building/README.md
@@ -821,7 +821,7 @@ git commit -m "Add interactive exercise notebook to module 03"
 **Interfaces:**
 - Consumes: `grading.grade` (Task 2); `xarray`, `dask`, `numpy`, `netCDF4` (Task 1).
 
-- [ ] **Step 1: Write the notebook builder and run it**
+- [x] **Step 1: Write the notebook builder and run it**
 
 Run:
 ```bash
@@ -959,12 +959,12 @@ with open("modules/04-coding-practices/exercise.ipynb", "w") as f:
 PYEOF
 ```
 
-- [ ] **Step 2: Verify the notebook is valid**
+- [x] **Step 2: Verify the notebook is valid**
 
 Run: `source .venv/bin/activate && python3 -c "import nbformat; nb = nbformat.read('modules/04-coding-practices/exercise.ipynb', as_version=4); nbformat.validate(nb); print('valid')"`
 Expected: prints `valid`.
 
-- [ ] **Step 3: Verify the deterministic test cell actually fails on the buggy code and passes on the fix**
+- [x] **Step 3: Verify the deterministic test cell actually fails on the buggy code and passes on the fix**
 
 Run this against the buggy version (should fail):
 ```bash
@@ -1051,7 +1051,7 @@ PYEOF
 ```
 Expected: `PASS: monthly_mean stayed lazy until .compute()`
 
-- [ ] **Step 4: Add the notebook pointer to the README**
+- [x] **Step 4: Add the notebook pointer to the README**
 
 In `modules/04-coding-practices/README.md`, in the "## Hands-on exercise" section, add directly under the `**Task:**` line:
 
@@ -1063,9 +1063,22 @@ Do this in [exercise.ipynb](exercise.ipynb).
 
 If a `GOOGLE_API_KEY` is available: fill in `explanation` once with a correct explanation mentioning eager computation/memory (expect `PASS`) and once with an unrelated or vague explanation (expect `NEEDS WORK`). If no key is available, skip and note the pending manual check.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add modules/04-coding-practices/exercise.ipynb modules/04-coding-practices/README.md
 git commit -m "Add interactive exercise notebook to module 04"
 ```
+
+---
+
+## Execution notes (2026-09-30)
+
+Executed inline on branch `feature/interactive-notebooks`. All steps are done except the four manual end-to-end checks (Tasks 5–8), which need a real `GOOGLE_API_KEY` that wasn't available while this plan was executed. Deviations from the plan text above:
+
+- **Task 2, model:** `MODEL_NAME = "gemini-3.5-flash-lite"`, not `gemini-2.0-flash`. Gemini 2.0 Flash was shut down on 2026-06-01, and the 2.5 models are closed to new accounts. Changing models later is a one-line edit.
+- **Task 2, invalid key:** the spec requires a clear error for a missing *or invalid* key. `grade()` now wraps Gemini API errors in `GradingError` with setup guidance, covered by a fourth test (`test_grade_raises_clear_error_when_api_rejects_key`).
+- **Task 1:** appended to the existing `.gitignore` (which holds `.claude/worktrees/`) instead of overwriting it.
+- **Tasks 5–8:** each README pointer is its own paragraph after the Task paragraph, not inserted mid-paragraph.
+- **Final review, fix 1:** per the spec, each notebook's `question`/`rubric` lives in a locked cell (`editable`/`deletable` false) right after the import cell, instead of an editable cell at the bottom. CONTRIBUTING describes this layout.
+- **Final review, fix 2:** README Setup creates and activates a `.venv` before `pip install`, because a bare `pip install` fails on Ubuntu 24.04, Debian 12 and Homebrew Python (PEP 668).
