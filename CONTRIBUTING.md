@@ -39,6 +39,9 @@ Edit the copied `exercise.ipynb`:
 - Write a short, specific rubric string describing what a passing answer
   must contain — this is what the LLM judge grades against, so be
   concrete about the substance you're checking for, not the wording.
+  It goes in the locked `question`/`rubric` cell near the top (cell
+  metadata `"editable": false`), so learners see it before they start
+  and can't change it by accident.
 - If your exercise has a deterministic, checkable part (e.g. code that
   either works or doesn't), check it with a plain `assert`, not the LLM
   judge — reserve `grade()` for genuinely free-form answers.
