@@ -23,14 +23,22 @@ Each module now includes a runnable Jupyter notebook (`exercise.ipynb`)
 alongside its `README.md`. To run them:
 
 1. Clone this repo and `cd` into it.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Get a free Gemini API key (no credit card required) from
+2. Create and activate a virtual environment, which keeps these packages
+   separate from the rest of your computer's Python (many systems refuse
+   a plain `pip install` without one):
+   - macOS/Linux: `python3 -m venv .venv`, then `source .venv/bin/activate`
+   - Windows: `py -m venv .venv`, then `.venv\Scripts\activate`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Get a free Gemini API key (no credit card required) from
    [Google AI Studio](https://aistudio.google.com/apikey) — this powers
    the automated feedback on exercise answers.
-4. Copy `.env.example` to `.env` and paste your key in:
+5. Copy `.env.example` to `.env` and paste your key in:
    `GOOGLE_API_KEY=your-key-here`
-5. Launch Jupyter: `jupyter lab` (or `jupyter notebook`), then open a
+6. Launch Jupyter: `jupyter lab` (or `jupyter notebook`), then open a
    module's `exercise.ipynb`.
+
+Next time, just `cd` into the repo, re-activate the environment (the
+`activate` command from step 2), and launch Jupyter.
 
 The exercises themselves still ask you to go use whatever AI assistant
 you already have access to — the API key above is only used internally
