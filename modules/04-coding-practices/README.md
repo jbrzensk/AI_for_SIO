@@ -179,7 +179,10 @@ above) and:
 2. Ask for the fix **and** a test that verifies the fix.
 3. Run the test yourself before accepting the change.
 
-Do this in [exercise.ipynb](exercise.ipynb).
+[exercise.ipynb](exercise.ipynb) sets up steps 2-3 for you (fix the
+function directly, verify with the provided test) — for step 1, try
+writing your own reproducible prompt to an AI assistant first and
+compare its suggested fix to yours.
 
 **Success looks like:** you have a passing test that specifically checks
 the property you were worried about (not just "the function runs without
