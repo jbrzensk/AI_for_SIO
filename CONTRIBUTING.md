@@ -10,7 +10,8 @@ cp -r modules/_template modules/0N-your-module-name
 ```
 
 Use a two-digit prefix (`04-`, `05-`...) so modules sort in learning order.
-Use kebab-case for the folder name.
+Use kebab-case for the folder name. This copies both `README.md` and
+`exercise.ipynb`.
 
 ## 2. Fill in the template sections
 
@@ -26,6 +27,26 @@ Every module's `README.md` must keep these five sections, in this order:
    success criterion. No exercise = the module isn't done.
 5. **Key takeaways** — 3-6 short bullet points. These should be
    self-contained enough to lift directly into `llm-context/SKILLS.md`.
+
+## 2a. Wire up the exercise notebook
+
+Edit the copied `exercise.ipynb`:
+
+- Keep the boilerplate import cell (`sys.path.insert(...)` +
+  `from grading import grade`) — every module's notebook uses it.
+- Replace the placeholder `answer` cell(s) with whatever the learner
+  needs to fill in for your exercise.
+- Write a short, specific rubric string describing what a passing answer
+  must contain — this is what the LLM judge grades against, so be
+  concrete about the substance you're checking for, not the wording.
+- If your exercise has a deterministic, checkable part (e.g. code that
+  either works or doesn't), check it with a plain `assert`, not the LLM
+  judge — reserve `grade()` for genuinely free-form answers.
+- Keep the notebook short — a couple of code cells plus the grading
+  cell. The 30-minute budget is protected by brevity here, not by
+  cutting the README.
+- In the README's "Hands-on exercise" section, add one line pointing to
+  the notebook: `Do this in [exercise.ipynb](exercise.ipynb).`
 
 ## 3. Add it to the learning path
 
