@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How AI Works — Interactive Pipeline Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>How AI Works: Watch a Real Model Think</h1>
+    <p>
+      Type a sentence and watch it move through a real small language model
+      (<code>distilgpt2</code>). Tokenization and next-token prediction below
+      are the model's genuine output. Embeddings and Attention are
+      illustrative approximations — the published model file doesn't expose
+      those real internal values — see the caption on each of those panels.
+    </p>
+
+    <div id="unsupported-banner" class="banner banner-error" hidden>
+      This demo needs a browser with WebAssembly support. Please try a
+      recent version of Chrome, Firefox, Edge, or Safari.
+    </div>
+
+    <div id="error-banner" class="banner banner-error" hidden></div>
+
+    <section class="controls">
+      <label for="sentence-input">Your sentence</label>
+      <textarea id="sentence-input" rows="2">What color is the sky?</textarea>
+
+      <div class="load-row">
+        <button id="load-button" type="button">Load the model (~100-300MB, one-time)</button>
+        <progress id="load-progress" value="0" max="100" hidden></progress>
+        <span id="load-status"></span>
+        <button id="retry-button" type="button" hidden>Retry</button>
+      </div>
+
+      <button id="run-button" type="button" disabled>Run</button>
+    </section>
+
+    <section>
+      <h2>Tokens</h2>
+      <div id="tokens-section">Load the model, then click Run to see tokens.</div>
+    </section>
+
+    <section>
+      <h2>Embeddings</h2>
+      <div id="embeddings-section"></div>
+    </section>
+
+    <section>
+      <h2>Attention</h2>
+      <div id="attention-section"></div>
+    </section>
+
+    <section>
+      <h2>Prediction</h2>
+      <div id="prediction-section">Click Run to see next-token predictions.</div>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

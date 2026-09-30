@@ -1,0 +1,4 @@
+# Git worktrees created for isolated feature work should never be tracked —
+# each worktree is a full checkout of the repo, and committing one nests an
+# entire duplicate copy of the project inside itself.
+.claude/worktrees/

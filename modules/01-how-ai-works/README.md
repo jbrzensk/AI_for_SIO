@@ -156,6 +156,19 @@ the model can't actually substantiate — and you can explain *why* that
 happened based on the mechanism above, and which reasoning mode the task
 fell into.
 
+## Try it: interactive pipeline demo
+
+Want to see the mechanism above happen for real? There's a small in-browser
+demo that runs an actual small language model (`distilgpt2`) on a sentence
+you type, showing real tokenization and real next-token prediction (the
+embeddings and attention panels are clearly-labeled illustrative
+approximations — see the caption on each):
+
+**[Open the interactive demo](https://jbrzensk.github.io/AI_for_SIO/modules/01-how-ai-works/demo/)**
+
+First load takes a one-time ~100-300MB download (cached by your browser
+afterward). No data leaves your browser — everything runs locally.
+
 ## Key takeaways
 - AI ⊃ Machine Learning ⊃ Deep Learning — it's statistical, and it's a
   tool with no understanding, goals, or judgment of its own
