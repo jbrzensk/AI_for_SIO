@@ -146,13 +146,19 @@ async function handleRun() {
   } catch (err) {
     console.error(err);
     showError('Something went wrong running the model. See the console for details.');
+    // Any predictions still on screen belong to the previous text, not the
+    // one this run failed on — a Step or pick would apply them to the wrong
+    // sequence. Drop them; renderPrediction falls back to its "Click Run..."
+    // placeholder (no Step/candidate buttons) until a run succeeds.
+    state.lastLogits = null;
+    renderPredictionSection();
   } finally {
     isRunning = false;
     els.runButton.textContent = 'Run';
     updateRunButtonState();
-    // Re-enable Step and the candidate rows — both the fresh ones a successful
-    // run just rendered (built disabled, since isRunning was still true) and,
-    // on failure, the old ones disabled above that never got rebuilt.
+    // Re-enable the fresh Step and candidate buttons a successful run just
+    // rendered (built disabled, since isRunning was still true). After a
+    // failure the panel was cleared above, so there's nothing to re-enable.
     setPredictionButtonsDisabled(false);
   }
 }
