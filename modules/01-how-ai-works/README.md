@@ -152,11 +152,15 @@ nature?
 
 Do this in [exercise.ipynb](exercise.ipynb).
 
-**Success looks like:** You can point to at least one specific claim or
-citation in the response that is either fabricated, subtly wrong, or that
-the model can't actually substantiate — and you can explain *why* that
-happened based on the mechanism above, and which reasoning mode the task
-fell into.
+**Success looks like:** You fact-checked at least one specific claim or
+citation in the response against a source you trust, and can say what
+you found: confirmed, wrong, or impossible to substantiate. If it held
+up, that's fine; what counts is the checking. Either way, you can
+explain, based on the mechanism above, why the answer couldn't be
+trusted until you checked it (the model predicts likely text; it never
+looked anything up), and which reasoning mode the task fell into. If
+everything checks out, push with a narrower follow-up (exact figures,
+page numbers, DOIs), which is where invented details usually show up.
 
 ## Try it: interactive pipeline demo
 
