@@ -202,6 +202,8 @@ looked anything up), and which reasoning mode the task fell into. If
 everything checks out, push with a narrower follow-up (exact figures,
 page numbers, DOIs), which is where invented details usually show up.
 
+---
+
 ## Try it: interactive pipeline demo
 
 Want to see the mechanism above happen for real? There's a small in-browser
