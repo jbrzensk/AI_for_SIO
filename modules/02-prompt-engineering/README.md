@@ -126,6 +126,8 @@ output."* Rewrite it by adding:
   relevant plot or dataset
 - what the model must verify, calculate, or flag
 
+Do this in [exercise.ipynb](exercise.ipynb).
+
 **Success looks like:** a rewritten prompt specific enough that two
 different people using it would get comparably useful, checkable results.
 For comparison, here's one strong version: *"I have a netCDF file of ocean

@@ -89,8 +89,20 @@ Use when asked to turn raw/rough meeting notes into a distributable summary.
 - Do not invent action items that weren't discussed.
 
 ## Example
-Input: [raw notes]
-Output: [formatted summary matching the structure above]
+Input: "met w/ Ana + Raj. agreed to switch to 6-hourly output. someone
+should rerun the 1959 case. still unsure about zooplankton units"
+
+Output:
+- Attendees: Ana, Raj
+- Decisions: Switch model output to 6-hourly.
+- Action Items: Rerun the 1959 case (OWNER NEEDED)
+- Open Questions: What units are the zooplankton values in?
+
+## Edge cases
+- Someone mentioned without a task is not an action item — don't
+  create one for them.
+- If two people are named for one task, list both as owners; don't
+  pick one.
 ```
 
 ### Keeping skills portable across LLMs
@@ -166,6 +178,9 @@ says on this one occasion.
 checklist). Write a skill file for it using the four-part anatomy above.
 Then test it: open a fresh conversation, paste the skill, and give the
 model a real example of that task.
+
+Draft and check your skill file in [exercise.ipynb](exercise.ipynb) —
+then still do the fresh-conversation test described above.
 
 **Success looks like:** The model's output follows your stated rules
 without you re-explaining them in the prompt itself — and you can hand

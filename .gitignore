@@ -2,3 +2,10 @@
 # each worktree is a full checkout of the repo, and committing one nests an
 # entire duplicate copy of the project inside itself.
 .claude/worktrees/
+
+# Local secrets and Python/Jupyter artifacts for the exercise notebooks.
+.env
+.ipynb_checkpoints/
+.venv/
+__pycache__/
+*.pyc
