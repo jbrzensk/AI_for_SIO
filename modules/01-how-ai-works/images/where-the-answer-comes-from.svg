@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="284" viewBox="0 0 720 284" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" text-anchor="middle">
+  <title id="title">Where the answer comes from</title>
+  <desc id="desc">Two lanes. Top, a good use: you supply the material, such as a paper, data, or notes; the AI transforms it by summarizing, reformatting, or restructuring; you can check the result against your source. Bottom, verify first: nothing is supplied, so the AI answers from memory; it generates likely text from patterns in its training data; facts, numbers, and citations may be invented, so verify before trusting.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker>
+  </defs>
+  <rect x="1" y="1" width="718" height="282" rx="12" fill="#ffffff" stroke="#d1d9e0" stroke-width="2"/>
+
+  <!-- Lane 1: you supply the material -->
+  <g>
+    <rect x="16" y="24" width="190" height="96" rx="8" fill="#f6f8fa" stroke="#d1d9e0"/>
+    <text x="111" y="66" font-size="14" font-weight="600" fill="#1f2328">You supply the material</text>
+    <text x="111" y="86" font-size="12" fill="#59636e">a paper, data, your notes</text>
+    <line x1="208" y1="72" x2="242" y2="72" stroke="#59636e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="246" y="24" width="228" height="96" rx="8" fill="#f6f8fa" stroke="#d1d9e0"/>
+    <text x="360" y="66" font-size="14" font-weight="600" fill="#1f2328">AI transforms it</text>
+    <text x="360" y="86" font-size="12" fill="#59636e">summarize · reformat · restructure</text>
+    <line x1="476" y1="72" x2="510" y2="72" stroke="#59636e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="514" y="24" width="190" height="96" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+    <circle cx="609" cy="46" r="11" fill="#1a7f37"/>
+    <path d="M603,46 l4,5 l8,-10" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+    <text x="609" y="78" font-size="14" font-weight="600" fill="#1a7f37">You can check it</text>
+    <text x="609" y="98" font-size="12" fill="#1f2328">against your source</text>
+  </g>
+
+  <!-- Lane 2: nothing supplied -->
+  <g>
+    <rect x="16" y="164" width="190" height="96" rx="8" fill="#f6f8fa" stroke="#d1d9e0"/>
+    <text x="111" y="206" font-size="14" font-weight="600" fill="#1f2328">Nothing supplied</text>
+    <text x="111" y="226" font-size="12" fill="#59636e">it answers from memory</text>
+    <line x1="208" y1="212" x2="242" y2="212" stroke="#59636e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="246" y="164" width="228" height="96" rx="8" fill="#f6f8fa" stroke="#d1d9e0"/>
+    <text x="360" y="206" font-size="14" font-weight="600" fill="#1f2328">AI generates likely text</text>
+    <text x="360" y="226" font-size="12" fill="#59636e">from patterns in its training data</text>
+    <line x1="476" y1="212" x2="510" y2="212" stroke="#59636e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="514" y="164" width="190" height="96" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+    <path d="M609,174 L621,195 L597,195 Z" fill="#cf222e"/>
+    <text x="609" y="192" font-size="13" font-weight="700" fill="#ffffff">!</text>
+    <text x="609" y="216" font-size="14" font-weight="600" fill="#cf222e">Verify before trusting</text>
+    <text x="609" y="234" font-size="12" fill="#1f2328">facts, numbers, citations</text>
+    <text x="609" y="249" font-size="12" fill="#1f2328">may be invented</text>
+  </g>
+
+  <text x="360" y="146" font-size="12" fill="#59636e">Same model, very different reliability — it depends on where the answer comes from.</text>
+</svg>

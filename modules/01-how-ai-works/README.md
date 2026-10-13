@@ -11,6 +11,8 @@ By the end of this module you will be able to:
 - Correctly identify what kinds of tasks LLMs are strong vs. unreliable at
 - Recognize hallucination and know when to independently verify output
 
+---
+
 ## Why this matters in a research context
 Treating an LLM like a search engine or a calculator leads to two failure
 modes: over-trusting fabricated facts, or under-using a tool that's
@@ -18,9 +20,14 @@ genuinely good at drafting, summarizing, and restructuring. Knowing the
 mechanism — and knowing which reasoning mode you're actually asking it to
 do — fixes both.
 
+---
+
 ## Core concept
 
 ### AI, ML, and DL aren't three things — they're nested
+
+![Nested ovals: Artificial Intelligence contains Machine Learning, which contains Deep Learning, which contains LLMs, the models behind AI assistants.](images/ai-ml-dl-nested.svg)
+
 - **Artificial Intelligence** — the broad idea of a computer behaving like
   a human in some respect.
 - **Machine Learning** — a *subset* of AI: using math (mostly linear
@@ -28,15 +35,16 @@ do — fixes both.
 - **Deep Learning** — a *subset* of ML: using machine learning itself to
   set the parameters of the math that finds those connections.
 
-Two things follow directly from this that are worth internalizing before
-anything else:
-
-- **AI is statistical.** It finds patterns in data and returns the most
-  likely continuation — it is not consulting a fact database.
-- **AI is a tool, not a mind.** It has no understanding, no goals, and no
-  judgment of its own. Many research misconceptions about AI come from
-  anthropomorphizing it — treating "it sounds confident" as "it is
-  right."
+> [!IMPORTANT]
+> Two things follow directly from this that are worth internalizing before
+> anything else:
+>
+> - **AI is statistical.** It finds patterns in data and returns the most
+>   likely continuation — it is not consulting a fact database.
+> - **AI is a tool, not a mind.** It has no understanding, no goals, and no
+>   judgment of its own. Many research misconceptions about AI come from
+>   anthropomorphizing it — treating "it sounds confident" as "it is
+>   right."
 
 ### Predictive vs. generative
 - **Predictive models** identify statistical patterns between inputs and
@@ -46,6 +54,9 @@ anything else:
   produce new content — text, code, images — by sampling from a learned
   distribution.
 
+<details>
+<summary><strong>Going deeper: temperature</strong></summary>
+
 **Temperature** controls the randomness of that sampling: low temperature
 (0–0.3) gives deterministic, factual-leaning output; medium (0.5–0.7)
 balances creativity and coherence; high (0.8–1.0) is more creative and
@@ -53,7 +64,12 @@ diverse but less reliable. Use low temperature for math/facts, higher for
 brainstorming or creative writing. (Not every interface exposes this
 setting, but it's worth knowing it exists.)
 
+</details>
+
 ### How a prompt actually becomes a response
+
+![The prompt "What color is the sky?" passes through four steps: tokens, embeddings, attention, and prediction of the most likely next token. No step looks anything up.](images/prompt-to-response.svg)
+
 1. **Tokenization** — your text is chopped into small pieces called
    tokens, and each token gets a unique number. `"What color is the sky?"`
    becomes roughly `["What", " color", " is", " the", " sky", "?"]`, each
@@ -71,14 +87,22 @@ setting, but it's worth knowing it exists.)
    (now with "The sky" as context) predicts `"is"` → predicts `"blue"` →
    predicts `"."`.
 
-The practical upshot: the model is not retrieving an answer, it's
-generating one token at a time based on what's statistically likely to
-follow — for every single word, including the ones inside a fact or
-citation.
+![Four rows: "The" leads to "sky", "The sky" leads to "is", "The sky is" leads to "blue", "The sky is blue" leads to a full stop. Each predicted token is added to the text before the next prediction.](images/one-token-at-a-time.svg)
+
+> [!IMPORTANT]
+> The practical upshot: the model is not retrieving an answer, it's
+> generating one token at a time based on what's statistically likely to
+> follow — for every single word, including the ones inside a fact or
+> citation.
 
 ### Three ways of reasoning — and which one your task needs
 Understanding which mode of reasoning a task requires tells you how much
 to trust the output.
+
+![Three panels. Deductive, general to specific: "All mammals breathe air" and "Dolphins are mammals" lead to "Dolphins breathe air"; certain if the premises are true; in LLMs, running code or a formal proof. Inductive, specific to general: four white swans lead to "Probably all swans are white"; likely, not guaranteed; in LLMs, how the model was trained. Abductive, observation to best explanation: "The grass is wet" has candidate explanations rain, sprinkler, and dew, and rain is picked; a best guess, not a proof; in LLMs, explaining or diagnosing something new.](images/three-ways-of-reasoning.svg)
+
+<details>
+<summary><strong>The same comparison as a table</strong></summary>
 
 | Type | Direction | Pattern | Example | Certainty |
 |---|---|---|---|---|
@@ -86,16 +110,21 @@ to trust the output.
 | **Inductive** | Specific → general | Observe many examples, generalize a likely rule | "Every swan I've seen is white. ∴ Probably all swans are white." | Likely, not guaranteed |
 | **Abductive** | Observation → best explanation | Observe something incomplete, generate candidate explanations, pick the simplest/most plausible | "The grass is wet. Rain is the simplest explanation. ∴ It probably rained." | A best guess, not a proof |
 
-Why this matters for LLMs specifically: **your model was *trained*
-inductively** (generalizing patterns from massive text data), **it
-*executes* known rules deductively** when running code or a formal proof,
-and **it reasons *abductively*** whenever you hand it a novel problem and
-ask it to explain or diagnose something. Modern LLMs blend all three
-depending on the task — but none of the three is "look up the true
-answer." Code execution and formal logic are the closest thing to real
-certainty you'll get from these tools.
+</details>
+
+> [!NOTE]
+> Why this matters for LLMs specifically: **your model was *trained*
+> inductively** (generalizing patterns from massive text data), **it
+> *executes* known rules deductively** when running code or a formal proof,
+> and **it reasons *abductively*** whenever you hand it a novel problem and
+> ask it to explain or diagnose something. Modern LLMs blend all three
+> depending on the task — but none of the three is "look up the true
+> answer." Code execution and formal logic are the closest thing to real
+> certainty you'll get from these tools.
 
 ### What AI can and cannot do
+
+![Two lanes. Top, a good use: you supply the material (a paper, data, your notes), the AI transforms it (summarize, reformat, restructure), and you can check the result against your source. Bottom: nothing is supplied, so the AI generates likely text from patterns in its training data, and facts, numbers, and citations may be invented, so verify before trusting.](images/where-the-answer-comes-from.svg)
 
 | Can't do | Why |
 |---|---|
@@ -106,12 +135,15 @@ certainty you'll get from these tools.
 | Think or understand | It manipulates tokens statistically; there is no comprehension, intent, or consciousness |
 | Keep up with new research | Models have training cutoffs — anything published after that is unknown to the model unless it searches |
 
-What it *is* good at, correspondingly: transforming and drafting from
-material you supply (summarizing, reformatting, restructuring), and acting
-as a first-pass reviewer or editor on something you can independently
-check.
+> [!TIP]
+> What it *is* good at, correspondingly: transforming and drafting from
+> material you supply (summarizing, reformatting, restructuring), and acting
+> as a first-pass reviewer or editor on something you can independently
+> check.
 
-### Types of LLMs
+<details>
+<summary><strong>Going deeper: types of LLMs (and Mixture of Experts)</strong></summary>
+
 LLMs differ along several axes: training data, training language,
 openness, size, and intended use case (a model meant to run on a phone vs.
 one meant to run on a server are built very differently).
@@ -130,7 +162,11 @@ network, the model is built from many smaller "expert" sub-networks, only
 some of which activate per query. This is why a model can list a huge
 total parameter count but a much smaller "active" parameter count.
 
-### A light word on responsible use
+</details>
+
+<details>
+<summary><strong>A light word on responsible use: hallucination, bias, disclosure</strong></summary>
+
 This module is about mechanics, not ethics, but three things are worth
 flagging now (each of these could be its own deeper lesson later):
 - **Hallucination** — covered above; treat every unverified factual claim,
@@ -142,6 +178,10 @@ flagging now (each of these could be its own deeper lesson later):
   require disclosing AI use, and running these models has a real (if often
   overstated and highly variable) energy and water cost. Right-size the
   model to the task.
+
+</details>
+
+---
 
 ## Hands-on exercise
 **Task:** Ask an AI assistant a factual question about a narrow, obscure
@@ -168,6 +208,8 @@ approximations — see the caption on each):
 
 First load takes a one-time ~100-300MB download (cached by your browser
 afterward). No data leaves your browser — everything runs locally.
+
+---
 
 ## Key takeaways
 - AI ⊃ Machine Learning ⊃ Deep Learning — it's statistical, and it's a

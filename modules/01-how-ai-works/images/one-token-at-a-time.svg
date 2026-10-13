@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="266" viewBox="0 0 500 190" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+  <title id="title">The model writes one token at a time</title>
+  <desc id="desc">Four rows. "The" leads the model to predict "sky". "The sky" leads to "is". "The sky is" leads to "blue". "The sky is blue" leads to a full stop. Each predicted token is added to the text, and the model predicts the next token from the longer text.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="188" rx="10" fill="#ffffff" stroke="#d1d9e0" stroke-width="1.5"/>
+  <g font-size="15" fill="#1f2328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace">
+    <text x="20" y="40">The</text>
+    <text x="20" y="80">The <tspan fill="#cf222e" opacity="0.6">sky</tspan></text>
+    <text x="20" y="120">The sky <tspan fill="#cf222e" opacity="0.6">is</tspan></text>
+    <text x="20" y="160">The sky is <tspan fill="#cf222e" opacity="0.6">blue</tspan></text>
+    <g fill="#cf222e" font-weight="700">
+      <text x="190" y="40">sky</text><text x="190" y="80">is</text><text x="190" y="120">blue</text><text x="190" y="160">.</text>
+    </g>
+  </g>
+  <g stroke="#59636e" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <path d="M54,35 L182,35"/><path d="M90,75 L182,75"/><path d="M126,115 L182,115"/><path d="M172,155 L182,155"/>
+    <path d="M200,46 C200,60 80,52 66,62" stroke-dasharray="3 3"/>
+    <path d="M196,86 C196,100 110,92 98,102" stroke-dasharray="3 3"/>
+    <path d="M204,126 C204,140 140,132 128,142" stroke-dasharray="3 3"/>
+  </g>
+  <g font-size="12" fill="#59636e">
+    <text x="250" y="66">The model predicts one token (bold red).</text>
+    <text x="250" y="84">It's added to the text (dashed arrow),</text>
+    <text x="250" y="102">and the model predicts the next one</text>
+    <text x="250" y="120">from the longer text. Repeat.</text>
+  </g>
+</svg>
