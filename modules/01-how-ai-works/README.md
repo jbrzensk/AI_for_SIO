@@ -99,22 +99,32 @@ setting, but it's worth knowing it exists.)
 Understanding which mode of reasoning a task requires tells you how much
 to trust the output.
 
+![Three panels. Deductive, general to specific: "All mammals breathe air" and "Dolphins are mammals" lead to "Dolphins breathe air"; certain if the premises are true; in LLMs, running code or a formal proof. Inductive, specific to general: four white swans lead to "Probably all swans are white"; likely, not guaranteed; in LLMs, how the model was trained. Abductive, observation to best explanation: "The grass is wet" has candidate explanations rain, sprinkler, and dew, and rain is picked; a best guess, not a proof; in LLMs, explaining or diagnosing something new.](images/three-ways-of-reasoning.svg)
+
+<details>
+<summary><strong>The same comparison as a table</strong></summary>
+
 | Type | Direction | Pattern | Example | Certainty |
 |---|---|---|---|---|
 | **Deductive** | General → specific | Start from a rule known to be true, apply it to a case, reach a guaranteed conclusion | "All mammals breathe air. Dolphins are mammals. ∴ Dolphins breathe air." | Certain, *if* premises are true |
 | **Inductive** | Specific → general | Observe many examples, generalize a likely rule | "Every swan I've seen is white. ∴ Probably all swans are white." | Likely, not guaranteed |
 | **Abductive** | Observation → best explanation | Observe something incomplete, generate candidate explanations, pick the simplest/most plausible | "The grass is wet. Rain is the simplest explanation. ∴ It probably rained." | A best guess, not a proof |
 
-Why this matters for LLMs specifically: **your model was *trained*
-inductively** (generalizing patterns from massive text data), **it
-*executes* known rules deductively** when running code or a formal proof,
-and **it reasons *abductively*** whenever you hand it a novel problem and
-ask it to explain or diagnose something. Modern LLMs blend all three
-depending on the task — but none of the three is "look up the true
-answer." Code execution and formal logic are the closest thing to real
-certainty you'll get from these tools.
+</details>
+
+> [!NOTE]
+> Why this matters for LLMs specifically: **your model was *trained*
+> inductively** (generalizing patterns from massive text data), **it
+> *executes* known rules deductively** when running code or a formal proof,
+> and **it reasons *abductively*** whenever you hand it a novel problem and
+> ask it to explain or diagnose something. Modern LLMs blend all three
+> depending on the task — but none of the three is "look up the true
+> answer." Code execution and formal logic are the closest thing to real
+> certainty you'll get from these tools.
 
 ### What AI can and cannot do
+
+![Two lanes. Top, a good use: you supply the material (a paper, data, your notes), the AI transforms it (summarize, reformat, restructure), and you can check the result against your source. Bottom: nothing is supplied, so the AI generates likely text from patterns in its training data, and facts, numbers, and citations may be invented, so verify before trusting.](images/where-the-answer-comes-from.svg)
 
 | Can't do | Why |
 |---|---|
