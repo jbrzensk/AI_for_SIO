@@ -28,7 +28,10 @@ alongside its `README.md`. To run them:
    a plain `pip install` without one):
    - macOS/Linux: `python3 -m venv .venv`, then `source .venv/bin/activate`
    - Windows: `py -m venv .venv`, then `.venv\Scripts\activate`
-3. Install dependencies: `pip install -r requirements.txt`
+3. Install dependencies: `pip install -r requirements.txt`, then run
+   `nbstripout --install` once. That makes Git leave out your notebook
+   results (outputs) whenever you commit, so only the exercise itself is
+   ever saved to the repo; you still see your outputs on your computer.
 4. Get a free Gemini API key (no credit card required) from
    [Google AI Studio](https://aistudio.google.com/apikey) — this powers
    the automated feedback on exercise answers.

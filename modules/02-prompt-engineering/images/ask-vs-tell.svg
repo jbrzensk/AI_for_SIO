@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+  <title id="title">Asking a question versus giving a command</title>
+  <desc id="desc">Two chat exchanges. Left, asking: "Could you maybe look at whether this function is slow?" gets the reply "Yes, it might be slow." A question gets an answer, not the work. Right, telling: "Analyze this function and explain why it may be slow." gets the actual analysis: it's slow because .values loads the whole array into memory at once; fix: use .mean(dim="time") and call .compute() only at the end. A command gets the work done.</desc>
+  <rect x="1" y="1" width="718" height="298" rx="12" fill="#ffffff" stroke="#d1d9e0" stroke-width="2"/>
+
+  <!-- Ask -->
+  <rect x="12" y="12" width="342" height="276" rx="10" fill="#f6f8fa" stroke="#d1d9e0"/>
+  <text x="183" y="38" text-anchor="middle" font-size="16" font-weight="600" fill="#cf222e">Asking a question</text>
+  <text x="338" y="58" text-anchor="end" font-size="10" fill="#59636e">You</text>
+  <rect x="64" y="64" width="276" height="56" rx="14" fill="#ddf4ff" stroke="#0969da"/>
+  <g font-size="13" fill="#1f2328"><text x="78" y="88">Could you maybe look at whether</text><text x="78" y="108">this function is slow?</text></g>
+  <text x="28" y="146" font-size="10" fill="#59636e">AI</text>
+  <rect x="26" y="152" width="200" height="40" rx="14" fill="#ffffff" stroke="#d1d9e0"/>
+  <text x="40" y="177" font-size="13" fill="#1f2328">Yes, it might be slow.</text>
+  <text x="183" y="266" text-anchor="middle" font-size="13" font-weight="600" fill="#cf222e">A question gets an answer, not the work.</text>
+
+  <!-- Tell -->
+  <rect x="366" y="12" width="342" height="276" rx="10" fill="#dafbe1" stroke="#1a7f37"/>
+  <text x="537" y="38" text-anchor="middle" font-size="16" font-weight="600" fill="#1a7f37">Giving a command</text>
+  <text x="692" y="58" text-anchor="end" font-size="10" fill="#59636e">You</text>
+  <rect x="418" y="64" width="276" height="56" rx="14" fill="#ddf4ff" stroke="#0969da"/>
+  <g font-size="13" fill="#1f2328"><text x="432" y="88">Analyze this function and explain</text><text x="432" y="108">why it may be slow.</text></g>
+  <text x="382" y="146" font-size="10" fill="#59636e">AI</text>
+  <rect x="380" y="152" width="306" height="92" rx="14" fill="#ffffff" stroke="#d1d9e0"/>
+  <g font-size="12" fill="#1f2328">
+    <text x="394" y="174">It's slow because <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">.values</tspan> loads the</text>
+    <text x="394" y="192">whole array into memory at once.</text>
+    <text x="394" y="214">Fix: use <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">.mean(dim="time")</tspan> and</text>
+    <text x="394" y="232">call <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">.compute()</tspan> only at the end.</text>
+  </g>
+  <text x="537" y="266" text-anchor="middle" font-size="13" font-weight="600" fill="#1a7f37">A command gets the work done.</text>
+</svg>

@@ -1,0 +1,5 @@
+# Strip outputs and execution counts from notebooks when they're committed,
+# so run results never end up in the repo. Needs a one-time
+# `nbstripout --install` in each clone (see README Setup).
+*.ipynb filter=nbstripout
+*.ipynb diff=ipynb
