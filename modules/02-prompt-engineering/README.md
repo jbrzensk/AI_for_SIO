@@ -10,12 +10,16 @@ By the end of this module you will be able to:
 - Take a vague prompt and rewrite it into one that produces a checkable,
   useful result
 
+---
+
 ## Why this matters in a research context
 The gap between "meh" and "genuinely useful" AI output is almost always
 the prompt, not the model. A vague ask gets a generic answer; a specific
 ask gets a specific one — and a prompt built for verification gets you an
 answer you can actually trust. A prompt is a specification for the work,
 not a magic phrase.
+
+---
 
 ## Core concept
 
@@ -25,12 +29,15 @@ not a magic phrase.
 3. **Output** — what form, length, and audience?
 4. **Boundaries** — what must stay fixed, be verified, or remain a draft?
 
-Not every prompt needs all four — add whichever pieces would materially
-change the answer. A good habit: before sending a prompt, ask yourself
-which of the four you left out, and whether that was on purpose.
+> [!TIP]
+> Not every prompt needs all four — add whichever pieces would materially
+> change the answer. A good habit: before sending a prompt, ask yourself
+> which of the four you left out, and whether that was on purpose.
 
 ### Good → Better → Best
 **Scenario:** you want an analysis of a paper you don't quite understand.
+
+![Three versions of a paper-summary prompt, colour-coded by part. Good, "Summarize this paper," is only a goal. Better adds context ("the question, methods, data, and findings") and output ("for an ocean scientist"). Best adds boundaries ("Use only the attached paper. Separate the authors' claims from your interpretation... cite page or section locations"), which make the answer easier to check.](images/good-better-best.svg)
 
 - **Good:** "Summarize this paper."
 - **Better:** "Summarize the question, methods, data, and findings for an
@@ -52,11 +59,15 @@ a quick gut-check, "Good" may be all you need.
 | You decide the best result from a list | Probability dictates the single response you get |
 | Needs correct spelling | Spelling mistakes mostly still work |
 
-The mental shift: you're not retrieving a document, you're specifying a
-task. Write it the way you'd write it to a capable person who can't ask
-you follow-up questions mid-task.
+> [!TIP]
+> The mental shift: you're not retrieving a document, you're specifying a
+> task. Write it the way you'd write it to a capable person who can't ask
+> you follow-up questions mid-task.
 
 ### A five-part checklist for real prompts
+
+![Left, the four parts for any prompt: Goal, Context, Output, Boundaries. Right, the five-step checklist for real research prompts: Goal, Evidence, Output, Check, Confirm. Goal maps to Goal, Context to Evidence, Output to Output, and Boundaries splits into Check (verify afterwards) and Confirm (your sign-off).](images/four-parts-to-checklist.svg)
+
 For anything beyond a quick question, work through:
 1. **Goal** — what's the result, and who's it for?
 2. **Evidence** — what files or sources actually matter?
@@ -65,40 +76,53 @@ For anything beyond a quick question, work through:
 5. **Confirm** — what assumptions, code, or scientific logic need your
    sign-off?
 
-**Weak:** "Can you write me code to find the maximum temperature of a
+❌ **Weak:** "Can you write me code to find the maximum temperature of a
 netCDF file?"
 
-**Strong:** "Write me a Python script, using Jupyter and xarray, to find
+✅ **Strong:** "Write me a Python script, using Jupyter and xarray, to find
 the maximum temperature of a netCDF file. The file is very large and may
 need extra memory management to load. The script should have multiple
 cells: one for loading libraries and setting file paths, one for defining
 functions, and one where the functions are called. Number the cells for
 easy future reference."
 
-Same underlying question — the second version is checkable, reproducible,
-and tells the model about a real constraint (file size) it would otherwise
-never guess.
+> [!NOTE]
+> Same underlying question — the second version is checkable, reproducible,
+> and tells the model about a real constraint (file size) it would otherwise
+> never guess.
 
 ### Use commands, not questions
+
+![Two chat exchanges. Asking "Could you maybe look at whether this function is slow?" gets "Yes, it might be slow": an answer, not the work. Telling "Analyze this function and explain why it may be slow" gets the actual analysis: .values loads the whole array into memory; use .mean(dim="time") and call .compute() only at the end.](images/ask-vs-tell.svg)
+
+<details>
+<summary><strong>Why this feels unnatural</strong></summary>
+
 This one runs against social instinct, so it's worth explaining why.
 - In **parenting**, a question offers options: "We're going to get in the
   car now, okay?"
 - In **teaching**, you sometimes ask a question you don't want answered:
   "Why did you do that?" is really a prompt for reflection.
-- With an **AI**, a question *necessitates an answer*, not a considered
-  response — you spend the model's "effort" on answering the literal
-  question asked, rather than on doing the underlying task well.
+
+</details>
+
+With an **AI**, a question *necessitates an answer*, not a considered
+response — you spend the model's "effort" on answering the literal
+question asked, rather than on doing the underlying task well.
 
 Prefer explicit commands: not "Could you maybe look at whether this
 function is slow?" but "Analyze this function and explain why it may be
 slow."
 
-**Reminder:** the response you get back is a series of probability
-distributions over next tokens — it isn't "talking to you" in the sense of
-weighing your intent. Be as explicit as the task requires; don't make the
-model guess what you meant.
+> [!NOTE]
+> **Reminder:** the response you get back is a series of probability
+> distributions over next tokens — it isn't "talking to you" in the sense of
+> weighing your intent. Be as explicit as the task requires; don't make the
+> model guess what you meant.
 
-### Applying this to common research tasks
+<details>
+<summary><strong>Going deeper: applying this to research tasks</strong></summary>
+
 - **Paper summaries:** extract the research question, methods, and data;
   synthesize findings and limitations; ask for page/section locations for
   deeper reading; then check numbers, units, citations, and figure
@@ -117,6 +141,10 @@ model guess what you meant.
   easier to check each piece. The investigator, not the model, remains
   responsible for accuracy, originality, and compliance.
 
+</details>
+
+---
+
 ## Hands-on exercise
 **Task — repair the prompt:** You've been given a netCDF file of ocean
 data from 1959. Start from this weak prompt: *"Explain this model
@@ -130,6 +158,10 @@ Do this in [exercise.ipynb](exercise.ipynb).
 
 **Success looks like:** a rewritten prompt specific enough that two
 different people using it would get comparably useful, checkable results.
+
+<details>
+<summary><strong>One strong version (try yours first)</strong></summary>
+
 For comparison, here's one strong version: *"I have a netCDF file of ocean
 data for the year 1959. The file has physical tracer values as well as
 zooplankton values. Write a Jupyter notebook to analyze the values and
@@ -138,6 +170,10 @@ plotted suitable for professional publication, including PDF and PNG
 formats. One plot should compare the trends of the three different
 zooplankton types."* Compare what context your version added versus this
 one — there's more than one good answer here.
+
+</details>
+
+---
 
 ## Key takeaways
 - Specify goal, context, output, and boundaries — vague prompts get
