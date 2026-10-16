@@ -50,6 +50,12 @@ Edit the copied `exercise.ipynb`:
   cutting the README.
 - In the README's "Hands-on exercise" section, add one line pointing to
   the notebook: `Do this in [exercise.ipynb](exercise.ipynb).`
+- Commit notebooks without outputs. `.gitattributes` runs every
+  `*.ipynb` through `nbstripout` on commit, once you've run
+  `nbstripout --install` in your clone (README Setup, step 3). To also
+  drop the editor details some tools add (VS Code's `language_info`
+  extras), run this once as well:
+  `git config filter.nbstripout.extrakeys "metadata.language_info.codemirror_mode metadata.language_info.file_extension metadata.language_info.mimetype metadata.language_info.nbconvert_exporter metadata.language_info.pygments_lexer metadata.language_info.version"`
 
 ## 3. Add it to the learning path
 
