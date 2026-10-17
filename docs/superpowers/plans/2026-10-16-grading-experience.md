@@ -1816,6 +1816,7 @@ import grading
 from grading import progress
 
 REPO = os.getcwd()
+FENCE = "`" * 3  # a literal triple backtick would close this plan's code block
 progress.PROGRESS_FILE = Path(tempfile.mkdtemp()) / ".progress.json"  # never touch real progress
 cards = []
 grading._show = cards.append
@@ -1835,7 +1836,7 @@ CASES = [
       "formats. One plot should compare the trends of the three different zooplankton types."}, "Passed"),
     ("02-prompt-engineering", {"rewritten_prompt": "Explain this model output."}, "Not yet"),
     ("03-skills-use-and-building", {"skill_file_text": open(f"{REPO}/modules/03-skills-use-and-building/README.md").read()
-      .split("### Minimal example\n```markdown\n")[1].split("\n```")[0]}, "Passed"),
+      .split(f"### Minimal example\n{FENCE}markdown\n")[1].split(f"\n{FENCE}")[0]}, "Passed"),
     ("03-skills-use-and-building", {"skill_file_text": "# Skill: Notes\n\n## When to use\nFor notes.\n\n## Instructions\n- Be helpful."}, "Not yet"),
     ("04-coding-practices", {"explanation": "Calling .values forced Dask to compute immediately and turned the lazy array into "
       "an in-memory NumPy array, so the whole dataset was loaded into RAM at once instead of staying chunked until .compute()."}, "Passed"),
