@@ -33,18 +33,26 @@ Every module's `README.md` must keep these five sections, in this order:
 Edit the copied `exercise.ipynb`:
 
 - Keep the boilerplate import cell (`sys.path.insert(...)` +
-  `from grading import grade`) — every module's notebook uses it.
+  `from grading import check`) — every module's notebook uses it.
 - Replace the placeholder `answer` cell(s) with whatever the learner
   needs to fill in for your exercise.
-- Write a short, specific rubric string describing what a passing answer
-  must contain — this is what the LLM judge grades against, so be
-  concrete about the substance you're checking for, not the wording.
-  It goes in the locked `question`/`rubric` cell near the top (cell
-  metadata `"editable": false`), so learners see it before they start
-  and can't change it by accident.
+- In the locked rubric cell near the top (cell metadata
+  `"editable": false`), define `question`, `points` and `needed`.
+  `points` maps each point's name to what an answer that meets it does;
+  be concrete about the substance, not the wording. `needed` is how many
+  points must be met to pass. The grader judges each point and shows a
+  ✅/❌ checklist; Python counts the points against `needed`, so the
+  verdict follows a fixed rule.
+- The last cell is `check(question, points, needed, <answer variable>)`.
+  It grades, shows the result card, and records the learner's private
+  progress in `.progress.json` (git-ignored). `reset_progress()` starts
+  it over.
 - If your exercise has a deterministic, checkable part (e.g. code that
-  either works or doesn't), check it with a plain `assert`, not the LLM
-  judge — reserve `grade()` for genuinely free-form answers.
+  either works or doesn't), wrap the test in a no-argument function and
+  call `check_code(run_test)`: it shows a pass/not-yet card without the
+  LLM. Reserve `check()` for genuinely free-form answers. A module that
+  has both needs both to pass; list it in `REQUIRED_CHECKS` in
+  `grading/progress.py`.
 - Keep the notebook short — a couple of code cells plus the grading
   cell. The 30-minute budget is protected by brevity here, not by
   cutting the README.

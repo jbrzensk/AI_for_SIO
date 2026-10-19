@@ -1,7 +1,7 @@
 # Grading Experience Design
 
 Date: 2026-10-16
-Status: Approved in conversation; written spec under review
+Status: Approved and implemented (plan: docs/superpowers/plans/2026-10-16-grading-experience.md)
 
 ## Problem
 
