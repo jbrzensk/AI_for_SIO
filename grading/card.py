@@ -19,7 +19,11 @@ class ProgressView:
     note: str = ""  # e.g. the "progress file was set aside" notice
 
 
-NUDGE = "Most people need two or three tries. Edit your answer above and run this cell again."
+ANSWER_NUDGE = ("Most people need two or three tries. Edit your answer above, run that cell, "
+                "then run this one again.")
+CODE_NUDGE = ("Most people need two or three tries. Fix the function above, run its cell, "
+              "then run this test again.")
+MODULE_NOT_COMPLETE_NOTE = "To complete this module, the code test above also needs to pass."
 _CONFETTI_COLORS = ("#0969da", "#1a7f37", "#8250df", "#bc4c00", "#bf8700", "#cf222e")
 
 _CSS = """<style>
@@ -44,9 +48,9 @@ _CSS = """<style>
 .aisio-card .aisio-next{margin:10px 0 8px;padding:10px 12px;border-radius:8px;background:#f6f8fa;border-left:4px solid #8250df;overflow-wrap:anywhere;}
 .aisio-card .aisio-next b{color:#8250df;}
 .aisio-card .aisio-nudge,.aisio-card .aisio-note{font-size:13px;color:#59636e;margin:0 0 10px;}
-.aisio-card pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0 10px;padding:8px 10px;background:#f6f8fa;border-radius:6px;font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1f2328;}
+.aisio-card.aisio-card pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0 10px;padding:8px 10px;background:#f6f8fa !important;border-radius:6px;font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1f2328 !important;}
 .aisio-card ol.aisio-fix{margin:6px 0 10px;padding-left:20px;}
-.aisio-card code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:#eff2f5;padding:1px 5px;border-radius:4px;}
+.aisio-card.aisio-card code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:#eff2f5 !important;color:#1f2328 !important;padding:1px 5px;border-radius:4px;}
 .aisio-card details{margin:0 0 10px;font-size:12px;color:#59636e;}
 .aisio-card .aisio-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 18px;border-top:1px solid #eaeef2;background:#f6f8fa;font-size:12px;color:#59636e;}
 .aisio-card .aisio-strip{display:flex;gap:6px;flex-wrap:wrap;}
@@ -67,14 +71,14 @@ _ERRORS = {
                ["Get a free key at <b>aistudio.google.com/apikey</b> (no credit card).",
                 "Copy <code>.env.example</code> to <code>.env</code> in the repo folder.",
                 "Put your key after <code>GOOGLE_API_KEY=</code> and save.",
-                "Restart the kernel and run this cell again."]),
+                "Restart the kernel, then run all cells from the top."]),
     "invalid_key": ("🔑", "Couldn't grade yet: the API key was rejected",
                     "Your answer is fine; the key in .env isn't working.",
                     ["Open <code>.env</code> in the repo folder and check the line starts exactly "
                      "<code>GOOGLE_API_KEY=</code>, with no spaces or quotes.",
                      "If the key is wrong or was deleted, make a new one at "
                      "<b>aistudio.google.com/apikey</b> and paste it in.",
-                     "Restart the kernel and run this cell again."]),
+                     "Restart the kernel, then run all cells from the top."]),
     "offline": ("📡", "Couldn't grade yet: can't reach the grader",
                 "Your answer is fine; the grader needs an internet connection.",
                 ["Check your internet connection (or VPN).",
@@ -160,7 +164,9 @@ def verdict_card(*, module: str | None, title: str, judgement: Judgement, needed
     label = "Next improvement" if passed else "Your next step"
     body = (f'<ul class="aisio-points">{items}</ul>'
             f'<div class="aisio-next"><b>{label}:</b> {escape(judgement.next_step)}</div>'
-            + ("" if passed else f'<p class="aisio-nudge">{NUDGE}</p>')
+            + ("" if passed else f'<p class="aisio-nudge">{ANSWER_NUDGE}</p>')
+            + (f'<p class="aisio-note">{MODULE_NOT_COMPLETE_NOTE}</p>'
+               if passed and module and not module_complete else "")
             + _note(progress))
     if passed:
         extra, stamped = _celebration(module, attempt, module_complete)
@@ -182,8 +188,8 @@ def code_card(*, module: str | None, title: str, passed: bool, error: str | None
                      extra=extra, stamped=stamped, foot=_strip(progress))
     body = (f"<pre>{escape(error or '')}</pre>"
             '<div class="aisio-next"><b>Your next step:</b> read the message above, fix the function, '
-            "and run the test cell again.</div>"
-            f'<p class="aisio-nudge">{NUDGE}</p>' + _note(progress))
+            "run its cell, then run this test again.</div>"
+            f'<p class="aisio-nudge">{CODE_NUDGE}</p>' + _note(progress))
     return _card("notyet", "🌱", f"Code test not passing yet: {_label(module, title)}", sub, body,
                  foot=_strip(progress))
 

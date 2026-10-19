@@ -43,7 +43,7 @@ can't clash with the notebook's own styles.
 | State | Header | Body | Footer |
 |---|---|---|---|
 | **Passed** | Green, 🎉, "Passed: Module NN, Title", "k of n points (needed m) · attempt a"; confetti plus the "MODULE NN COMPLETE" stamp | ✅/➖ line per point with a one-line note; **"Next improvement"** (one concrete step) | Progress strip |
-| **Not yet** | Amber, 🌱, "Not yet: Module NN, Title", same subtitle | ✅/❌ line per point with note; **"Your next step"**; "Most people need two or three tries. Edit your answer above and run this cell again." | Progress strip |
+| **Not yet** | Amber, 🌱, "Not yet: Module NN, Title", same subtitle | ✅/❌ line per point with note; **"Your next step"**; "Most people need two or three tries. Edit your answer above, run that cell, then run this one again." | Progress strip |
 | **Couldn't grade** | Blue, with an icon per problem (🔑 no or invalid key, 📡 offline, ⏳ rate limit, 🔧 unreadable reply or service error), "Couldn't grade yet: <reason>", "Your answer is fine; …" | Numbered fix for that specific problem (see Errors) | none |
 
 - **Progress strip:** one pill per module folder found under `modules/`
@@ -163,8 +163,8 @@ traceback. Each maps from a `GradingError` with a `kind`:
 
 | kind | Trigger | Card message / fix |
 |---|---|---|
-| `no_key` | `GOOGLE_API_KEY` unset or empty | The 2-minute setup steps (get key, copy `.env.example` to `.env`, paste key, restart kernel) |
-| `invalid_key` | API rejects the key (400/401/403 key errors) | Check the key in `.env`, then restart the kernel |
+| `no_key` | `GOOGLE_API_KEY` unset or empty | The 2-minute setup steps (get key, copy `.env.example` to `.env`, paste key, restart the kernel and run all cells from the top) |
+| `invalid_key` | API rejects the key (400/401/403 key errors) | Check the key in `.env`, then restart the kernel and run all cells from the top |
 | `offline` | `httpx` network/timeout error | Check your internet connection and run the cell again |
 | `rate_limit` | API 429 / resource exhausted | Wait a minute and try again; the free daily limit resets tomorrow |
 | `unreadable` | Reply isn't valid JSON or point names don't match | Run the cell again; your answer wasn't the problem |

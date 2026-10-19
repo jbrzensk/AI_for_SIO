@@ -48,8 +48,22 @@ def test_not_yet_card():
     assert "1 of 4 points (needed 3) · attempt 1" in html
     assert html.count("❌") == 3
     assert "Your next step:" in html
-    assert "Most people need two or three tries." in html
+    assert ("Most people need two or three tries. Edit your answer above, run that cell, "
+            "then run this one again.") in html
     assert 'class="aisio-confetti"' not in html
+
+
+def test_passing_explanation_without_the_code_test_explains_why_the_module_isnt_done():
+    # Module 04 needs both checks. If the explanation passes before the code
+    # test does, the card shouldn't just say "Passed" with nothing else.
+    html = pass_card(module="04", title="Coding with AI", module_complete=False)
+    assert "To complete this module, the code test above also needs to pass." in html
+
+
+def test_the_incomplete_note_is_not_shown_outside_a_module():
+    html = card.verdict_card(module=None, title="Exercise", judgement=judgement(True), needed=1, passed=True,
+                             attempt=None, module_complete=False, progress=None)
+    assert "To complete this module" not in html
 
 
 def test_progress_strip_marks_done_and_current_modules():
@@ -116,7 +130,9 @@ def test_code_card_pass_and_not_yet():
                          attempt=2, module_complete=False, progress=None)
     assert "Code test not passing yet: Module 04, Coding with AI" in bad
     assert "AssertionError: Expected a lazy Dask array &lt;before&gt; .compute()" in bad
-    assert "fix the function, and run the test cell again" in bad
+    assert "read the message above, fix the function, run its cell, then run this test again." in bad
+    assert ("Most people need two or three tries. Fix the function above, run its cell, "
+            "then run this test again.") in bad
 
 
 def test_code_card_completing_the_module_shows_the_stamp():
@@ -137,6 +153,16 @@ def test_each_error_kind_shows_its_own_fix(kind, phrase):
     html = card.error_card(kind)
     assert 'class="aisio-card aisio-error"' in html
     assert phrase in html
+
+
+@pytest.mark.parametrize("kind", ["no_key", "invalid_key"])
+def test_no_key_and_invalid_key_tell_the_learner_to_rerun_all_cells(kind):
+    # "Restart the kernel and run this cell again" leaves the learner with a
+    # NameError, because running only the one cell after a restart skips the
+    # cells that defined everything it needs.
+    html = card.error_card(kind)
+    assert "Restart the kernel, then run all cells from the top." in html
+    assert "run this cell again" not in html
 
 
 def test_error_card_detail_is_collapsed_and_escaped():
