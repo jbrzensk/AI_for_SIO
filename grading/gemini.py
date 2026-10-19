@@ -138,8 +138,13 @@ def judge(question: str, points: dict[str, str], answer: str) -> Judgement:
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
             ),
         )
+        text = response.text
     except errors.APIError as exc:
         raise _api_error(exc) from exc
     except httpx.HTTPError as exc:
         raise GradingError("offline", str(exc)) from exc
-    return _parse(response.text, points)
+    except errors.UnknownApiResponseError as exc:
+        # An HTTP 200 body that isn't JSON (e.g. a proxy or captive-portal
+        # page); the SDK raises this as a plain ValueError subclass, not APIError.
+        raise GradingError("service", str(exc)) from exc
+    return _parse(text, points)

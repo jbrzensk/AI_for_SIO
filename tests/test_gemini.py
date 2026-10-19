@@ -131,6 +131,14 @@ def test_network_failure_is_offline(fake_gemini):
     assert kind_of(lambda: gemini.judge("q", POINTS, "a")) == "offline"
 
 
+def test_unparseable_http_200_body_is_a_service_error(fake_gemini):
+    # The SDK raises errors.UnknownApiResponseError (a ValueError subclass,
+    # not an APIError) when an HTTP 200 body isn't JSON, e.g. a proxy or
+    # captive-portal page. It must not escape as a raw traceback.
+    fake_gemini(exc=errors.UnknownApiResponseError("bad body"))
+    assert kind_of(lambda: gemini.judge("q", POINTS, "a")) == "service"
+
+
 def test_request_settings(fake_gemini):
     sent = fake_gemini(text=reply())
     gemini.judge("The question", POINTS, "The answer")
