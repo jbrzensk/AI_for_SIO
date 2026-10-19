@@ -41,8 +41,8 @@ Edit the copied `exercise.ipynb`:
   `points` maps each point's name to what an answer that meets it does;
   be concrete about the substance, not the wording. `needed` is how many
   points must be met to pass. The grader judges each point and shows a
-  ✅/❌ checklist; Python counts the points against `needed`, so the
-  verdict follows a fixed rule.
+  ✅/❌ checklist (➖ for points a passing answer didn't need); Python
+  counts the points against `needed`, so the verdict follows a fixed rule.
 - The last cell is `check(question, points, needed, <answer variable>)`.
   It grades, shows the result card, and records the learner's private
   progress in `.progress.json` (git-ignored). `reset_progress()` starts
@@ -52,7 +52,10 @@ Edit the copied `exercise.ipynb`:
   call `check_code(run_test)`: it shows a pass/not-yet card without the
   LLM. Reserve `check()` for genuinely free-form answers. A module that
   has both needs both to pass; list it in `REQUIRED_CHECKS` in
-  `grading/progress.py`.
+  `grading/progress.py`. A module with only a code test (no `check()`
+  call at all) must still set its `REQUIRED_CHECKS` entry, to `{"code"}`
+  — otherwise it defaults to requiring an "answer" check that never
+  happens, and the module can never complete.
 - Keep the notebook short — a couple of code cells plus the grading
   cell. The 30-minute budget is protected by brevity here, not by
   cutting the README.

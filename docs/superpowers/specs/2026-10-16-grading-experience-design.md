@@ -176,9 +176,10 @@ Programming errors (wrong arguments to `check()`) raise normally.
 
 - All five `exercise.ipynb` files (modules 01–04 and `_template`): the
   locked rubric cell becomes `question` / `points` / `needed`; the
-  grading cell becomes a `check(...)` call; module 04's test cell calls
-  `check_code(test_monthly_mean_remains_lazy)`. The import cell imports
-  `check` (and `check_code` in module 04).
+  grading cell becomes a `check(...)` call; module 04's test cell wraps
+  `test_monthly_mean_remains_lazy` in a no-argument `run_test()` (which
+  creates the temp dir the test needs) and calls `check_code(run_test)`.
+  The import cell imports `check` (and `check_code` in module 04).
 - `CONTRIBUTING.md` section 2a: the points/needed format, `check()`,
   `check_code()`, and `reset_progress()`.
 - `.gitignore`: `.progress.json` and `.progress.json.bak`.
