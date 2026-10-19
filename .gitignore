@@ -9,3 +9,7 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Each learner's private exercise progress (grading/progress.py).
+.progress.json
+.progress.json.bak
