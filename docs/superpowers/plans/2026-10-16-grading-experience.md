@@ -73,7 +73,7 @@ Between Task 1 and Task 6 the notebooks still import the removed `grade` and won
   - `grading.gemini._schema(names) -> dict` (the response schema; point `name` is an enum of the rubric names)
   - `grading.gemini._get_client() -> genai.Client` (tests replace it)
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_gemini.py`:
 
@@ -242,12 +242,12 @@ def test_unknown_error_kind_is_rejected():
         gemini.GradingError("oops")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `.venv/bin/pytest tests/test_gemini.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'grading.gemini'` (the old `grading.py` is a module, not a package).
 
-- [ ] **Step 3: Replace `grading.py` with the package and implement `gemini.py`**
+- [x] **Step 3: Replace `grading.py` with the package and implement `gemini.py`**
 
 ```bash
 git rm -q grading.py tests/test_grading.py
@@ -413,17 +413,17 @@ def judge(question: str, points: dict[str, str], answer: str) -> Judgement:
     return _parse(response.text, points)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `.venv/bin/pytest tests/test_gemini.py -q`
 Expected: all pass (19 tests).
 
-- [ ] **Step 5: Run the whole suite**
+- [x] **Step 5: Run the whole suite**
 
 Run: `.venv/bin/pytest -q`
 Expected: all pass; no `tests/test_grading.py` collected.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add grading/__init__.py grading/gemini.py tests/test_gemini.py
@@ -449,7 +449,7 @@ git commit -m "Judge exercise answers point by point in a grading package"
   - `list_modules(modules_dir: Path | None = None) -> list[str]`
   - `path=None` means "use `PROGRESS_FILE` at call time", so tests can monkeypatch `progress.PROGRESS_FILE`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_progress.py`:
 
@@ -580,12 +580,12 @@ def test_progress_files_are_git_ignored():
         assert subprocess.run(["git", "check-ignore", "-q", name], cwd=progress.REPO_ROOT).returncode == 0
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `.venv/bin/pytest tests/test_progress.py -q`
 Expected: collection error, `ImportError: cannot import name 'progress' from 'grading'`.
 
-- [ ] **Step 3: Implement `grading/progress.py` and ignore the files**
+- [x] **Step 3: Implement `grading/progress.py` and ignore the files**
 
 Create `grading/progress.py`:
 
@@ -737,17 +737,17 @@ Append to `.gitignore`:
 .progress.json.bak
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `.venv/bin/pytest tests/test_progress.py -q`
 Expected: all pass (18 tests).
 
-- [ ] **Step 5: Run the whole suite**
+- [x] **Step 5: Run the whole suite**
 
 Run: `.venv/bin/pytest -q`
 Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add grading/progress.py tests/test_progress.py .gitignore
@@ -770,7 +770,7 @@ git commit -m "Track each learner's exercise progress privately in .progress.jso
   - `error_card(kind: str, detail: str = "") -> str`
   - Confetti on every pass; the "MODULE NN COMPLETE" stamp only when `module` is set and `module_complete` is true (for module 04, a code-test pass alone doesn't complete the module, so it gets confetti without a stamp).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_card.py`:
 
@@ -925,12 +925,12 @@ def test_error_card_without_detail_has_no_details_block():
     assert "<details>" not in card.error_card("no_key")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `.venv/bin/pytest tests/test_card.py -q`
 Expected: collection error, `ImportError: cannot import name 'card' from 'grading'`.
 
-- [ ] **Step 3: Implement `grading/card.py`**
+- [x] **Step 3: Implement `grading/card.py`**
 
 ```python
 """HTML cards shown under a notebook's grading cell.
@@ -1131,17 +1131,17 @@ def error_card(kind: str, detail: str = "") -> str:
     return _card("error", icon, title, sub, body)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `.venv/bin/pytest tests/test_card.py -q`
 Expected: all pass (20 tests).
 
-- [ ] **Step 5: Run the whole suite**
+- [x] **Step 5: Run the whole suite**
 
 Run: `.venv/bin/pytest -q`
 Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add grading/card.py tests/test_card.py
@@ -1165,7 +1165,7 @@ git commit -m "Render grading results as a self-contained HTML card"
   - `GradingError` re-exported.
   - `grading._show(html: str) -> None` displays HTML via IPython (tests replace it); `grading.judge` is the name `check()` calls (tests replace it).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_check.py`:
 
@@ -1307,12 +1307,12 @@ def test_show_uses_ipython_display(monkeypatch):
     assert shown[0].data == "<b>hi</b>"
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `.venv/bin/pytest tests/test_check.py -q`
 Expected: FAIL with `AttributeError: module 'grading' has no attribute '_show'` (or `check`).
 
-- [ ] **Step 3: Implement the public API**
+- [x] **Step 3: Implement the public API**
 
 Replace `grading/__init__.py` with:
 
@@ -1394,17 +1394,17 @@ def reset_progress() -> None:
     print("Your exercise progress has been reset.")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `.venv/bin/pytest tests/test_check.py -q`
 Expected: all pass (17 tests).
 
-- [ ] **Step 5: Run the whole suite**
+- [x] **Step 5: Run the whole suite**
 
 Run: `.venv/bin/pytest -q`
 Expected: all pass (74 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add grading/__init__.py tests/test_check.py
@@ -1422,7 +1422,7 @@ git commit -m "Add check(), check_code() and reset_progress() for the notebooks"
 - Consumes: `grading.check` (Task 4).
 - Produces: each notebook's import cell is the standard boilerplate ending `from grading import check`; its locked rubric cell defines `question`, `points`, `needed`; its last code cell calls `check(question, points, needed, <answer>)`.
 
-- [ ] **Step 1: Write the notebook structure check and run it (fails)**
+- [x] **Step 1: Write the notebook structure check and run it (fails)**
 
 Save as `/tmp/check_notebooks.py` (a verification script, not committed; the spec keeps notebook execution out of CI):
 
@@ -1461,7 +1461,7 @@ sys.exit(1 if failures else 0)
 Run: `.venv/bin/python /tmp/check_notebooks.py modules/_template modules/01-how-ai-works modules/02-prompt-engineering modules/03-skills-use-and-building`
 Expected: 4 × FAIL (import cell, rubric cell defines `question`/`rubric`, last cell, still calls `grade()`).
 
-- [ ] **Step 2: Rewrite the cells**
+- [x] **Step 2: Rewrite the cells**
 
 Run from the repo root (keeps cell ids and the rubric cells' lock metadata):
 
@@ -1571,12 +1571,12 @@ for module, rubric in RUBRICS.items():
 PYEOF
 ```
 
-- [ ] **Step 3: Run the structure check (passes)**
+- [x] **Step 3: Run the structure check (passes)**
 
 Run: `.venv/bin/python /tmp/check_notebooks.py modules/_template modules/01-how-ai-works modules/02-prompt-engineering modules/03-skills-use-and-building`
 Expected: 4 × PASS.
 
-- [ ] **Step 4: Run each notebook top to bottom without a key**
+- [x] **Step 4: Run each notebook top to bottom without a key**
 
 The last cell must show the "no API key" card, not a traceback:
 
@@ -1597,7 +1597,7 @@ done
 
 Expected: four lines ending `no-key card shown`. `GOOGLE_API_KEY=` is set to empty on purpose: `grading` loads `.env` at import, and `load_dotenv` never overrides a variable that already exists, so an empty value guarantees no real API call even when `.env` holds a key.
 
-- [ ] **Step 5: Commit (outputs are stripped by the nbstripout filter)**
+- [x] **Step 5: Commit (outputs are stripped by the nbstripout filter)**
 
 ```bash
 git add modules/_template/exercise.ipynb modules/01-how-ai-works/exercise.ipynb modules/02-prompt-engineering/exercise.ipynb modules/03-skills-use-and-building/exercise.ipynb
@@ -1615,12 +1615,12 @@ git commit -m "Switch the template and modules 01-03 notebooks to check() with p
 - Consumes: `grading.check`, `grading.check_code` (Task 4).
 - Produces: import cell ending `from grading import check, check_code` followed by the numpy/xarray/dask imports; the test cell ends with `check_code(run_test)`; the last cell calls `check(question, points, needed, explanation)`.
 
-- [ ] **Step 1: Run the structure check (fails)**
+- [x] **Step 1: Run the structure check (fails)**
 
 Run: `.venv/bin/python /tmp/check_notebooks.py modules/04-coding-practices`
 Expected: FAIL (import cell, rubric cell, last cell, still calls `grade()`).
 
-- [ ] **Step 2: Rewrite the cells**
+- [x] **Step 2: Rewrite the cells**
 
 ```bash
 .venv/bin/python - <<'PYEOF'
@@ -1701,12 +1701,12 @@ print("updated", path)
 PYEOF
 ```
 
-- [ ] **Step 3: Run the structure check (passes)**
+- [x] **Step 3: Run the structure check (passes)**
 
 Run: `.venv/bin/python /tmp/check_notebooks.py modules/04-coding-practices`
 Expected: PASS.
 
-- [ ] **Step 4: Run the notebook without a key: code test card, then the no-key card**
+- [x] **Step 4: Run the notebook without a key: code test card, then the no-key card**
 
 ```bash
 cd modules/04-coding-practices && env GOOGLE_API_KEY= ../../.venv/bin/python -c "
@@ -1731,7 +1731,7 @@ print('fixed function ->', 'pass card' if 'Code test passed' in cards[-1] else '
 
 Expected: `buggy function -> not-yet card`, `explanation -> no-key card`, `fixed function -> pass card`. Progress goes to a temporary file, so the learner's real `.progress.json` is untouched.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add modules/04-coding-practices/exercise.ipynb
@@ -1749,7 +1749,7 @@ git commit -m "Switch the module 04 notebook to check_code() and check()"
 **Interfaces:**
 - Consumes: everything above.
 
-- [ ] **Step 1: Update CONTRIBUTING section 2a**
+- [x] **Step 1: Update CONTRIBUTING section 2a**
 
 In `CONTRIBUTING.md`, replace these three bullets of section 2a:
 
@@ -1797,7 +1797,7 @@ with:
   `grading/progress.py`.
 ```
 
-- [ ] **Step 2: Live checks with a real key**
+- [x] **Step 2: Live checks with a real key**
 
 Requires `GOOGLE_API_KEY` in `.env`. Save as `/tmp/live_checks.py` and run `.venv/bin/python /tmp/live_checks.py` from the repo root:
 
@@ -1860,7 +1860,7 @@ print(f"{ok}/{len(CASES)} as expected")
 
 Expected: `8/8 as expected`. A mismatch means a rubric's points need rewording: fix the point description in that notebook, re-run Task 5/6 Steps 3–4 for it, and re-run this step.
 
-- [ ] **Step 3: Visual check in light and dark**
+- [x] **Step 3: Visual check in light and dark**
 
 Write real cards to files and screenshot them:
 
@@ -1890,7 +1890,7 @@ for t in light dark; do google-chrome --headless=new --disable-gpu --hide-scroll
 
 Open `/tmp/cards-light.png` and `/tmp/cards-dark.png`. Expected: the cards match the approved mock-up (green pass with stamp, amber not-yet with ❌ marks and nudge, code card with the assertion message, blue no-key card with four steps), readable on both backgrounds. Show them to the requester before the final commit.
 
-- [ ] **Step 4: Mark the spec implemented and commit**
+- [x] **Step 4: Mark the spec implemented and commit**
 
 In `docs/superpowers/specs/2026-10-16-grading-experience-design.md`, change the status line to `Status: Approved and implemented (plan: docs/superpowers/plans/2026-10-16-grading-experience.md)`.
 
@@ -1899,7 +1899,23 @@ git add CONTRIBUTING.md docs/superpowers/specs/2026-10-16-grading-experience-des
 git commit -m "Document check()/check_code() and the points rubric format"
 ```
 
-- [ ] **Step 5: Final full run**
+- [x] **Step 5: Final full run**
 
 Run: `.venv/bin/pytest -q && git status --short`
 Expected: all tests pass; no untracked `.progress*.json` files (they're ignored) and a clean tree.
+
+---
+
+## Execution notes (2026-10-19)
+
+Executed subagent-driven on `feature/grading-experience`: a fresh implementer per task, a task review after each, then a whole-branch review and one fix wave. All steps are done; 85 tests pass (74 planned + 11 added by the final-review fixes). Decisions made during execution:
+
+- **Verification scripts** that the plan put in `/tmp` ran from the git-ignored plan workspace instead, so every subagent could see them; Task 6 reused Task 5's structure check from there.
+- **Screenshots** (Task 7 Step 3) were reviewed by the controller and presented to the requester at the end instead of pausing mid-run; nothing was pushed or merged before that.
+- **Commit attribution** credits the model that actually wrote each commit (most tasks: Claude Haiku 4.5; Task 7 and the fix wave: Claude Sonnet 5). The Task 1 commit says Claude Opus 5.5 because of a controller instruction that was later corrected.
+- **Sanitized notebook views** (nbviewer, GitHub, reopened untrusted outputs) may strip the card's `<style>`; accepted, because committed notebooks carry no outputs and live JupyterLab/VS Code output keeps it.
+- **Live checks** were extended to print and judge every point's mark and note, not just the verdict, as the spec's Testing section requires: 8/8 verdicts and all point judgements sensible.
+- **Final-review fixes:** README read as UTF-8 so Windows can grade module 02; a progress entry missing `completed_on` is treated as unreadable, and a safety net in `_record()` keeps the card showing if progress handling ever fails; `.progress.json.tmp` is git-ignored and cleaned up; the SDK's `UnknownApiResponseError` becomes a "service" card; card `pre`/`code` colours use scoped `!important` so JupyterLab's theme can't override them; module 04's card explains why a passing explanation doesn't complete the module yet; docs corrected.
+- **Retry wording changed from the spec's original text** (spec amended): "Edit your answer above, run that cell, then run this one again"; the code card has its own "fix the function, run its cell, then run this test again"; key cards say "Restart the kernel, then run all cells from the top".
+- **Open, for the requester:** module 03's "Worked example" point requires a real example ("not placeholders"), while the module 03 README allows "a worked example or template".
+- **Known minor, parked:** if the `_record()` safety net ever fires on a module 01–03 pass, the card wrongly adds "To complete this module, the code test above also needs to pass." Fix: also require `"code" in progress.required_checks(module)` before showing that line.
