@@ -80,6 +80,21 @@ def test_wrong_arguments_raise_value_error(monkeypatch, shown, module02, points,
     assert shown == []
 
 
+def test_an_unexpected_progress_error_still_shows_the_card(monkeypatch, shown, module02):
+    # The global constraint is "grading never fails because of the progress
+    # file." progress.record() is defensive about OSError/ValueError, but if
+    # something else goes wrong in progress handling, _record() must still
+    # let the card show rather than let the exception escape check().
+    def boom(*args, **kwargs):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(progress, "record", boom)
+    fake_judge(monkeypatch, True, True, True, True)
+    grading.check("q", POINTS, 3, "a")
+    assert "Passed: Module 02, Prompt Engineering" in shown[0]
+    assert "Your progress" not in shown[0]
+
+
 def test_outside_a_module_folder_nothing_is_recorded(monkeypatch, shown, tmp_path):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(progress, "PROGRESS_FILE", tmp_path / ".progress.json")

@@ -55,11 +55,43 @@ def test_valid_json_with_the_wrong_shape_is_treated_as_unreadable(pfile):
     assert pfile.with_name(".progress.json.bak").exists()
 
 
+def test_an_entry_missing_completed_on_is_treated_as_unreadable(pfile):
+    # A file missing the "completed_on" key (rather than having it set to
+    # null) used to pass _valid() and then crash record() with a KeyError,
+    # leaving the broken file in place so every later check() crashed too.
+    pfile.write_text(json.dumps(
+        {"version": 1, "modules": {"01": {"passed_checks": ["answer"], "attempts": 2}}}))
+    result = progress.record("01", "answer", True, path=pfile)
+    assert result.note == progress.UNREADABLE_NOTE
+    assert pfile.with_name(".progress.json.bak").exists()
+
+
 def test_an_unwritable_progress_file_never_breaks_grading(tmp_path):
     unwritable = tmp_path / "no-such-folder" / ".progress.json"
     result = progress.record("02", "answer", True, path=unwritable)
     assert result.module_complete and result.attempt == 1
     assert result.note == progress.UNWRITABLE_NOTE
+
+
+def test_save_removes_the_temp_file_if_replacing_it_fails(tmp_path, monkeypatch):
+    def boom(*args, **kwargs):
+        raise OSError("replace failed")
+
+    monkeypatch.setattr(progress.os, "replace", boom)
+    pfile = tmp_path / ".progress.json"
+    with pytest.raises(OSError):
+        progress._save(pfile, {"version": 1, "modules": {}})
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_record_reports_unwritable_and_leaves_no_tmp_file_when_replace_fails(pfile, monkeypatch):
+    def boom(*args, **kwargs):
+        raise OSError("replace failed")
+
+    monkeypatch.setattr(progress.os, "replace", boom)
+    result = progress.record("02", "answer", True, path=pfile)
+    assert result.note == progress.UNWRITABLE_NOTE
+    assert not pfile.with_name(pfile.name + ".tmp").exists()
 
 
 def test_no_temporary_file_is_left_behind(pfile):
@@ -99,6 +131,23 @@ def test_module_info_falls_back_to_the_folder_name(tmp_path):
     assert progress.module_info(folder) == ("05", "Github Basics")
 
 
+def test_module_info_tolerates_undecodable_bytes_after_the_first_line(tmp_path):
+    # On Windows (cp1252 default) a README with UTF-8 bytes like \x9d used to
+    # raise UnicodeDecodeError, which escaped check() because only
+    # (OSError, IndexError) was caught.
+    folder = tmp_path / "02-prompt-engineering"
+    folder.mkdir()
+    (folder / "README.md").write_bytes(b"# Module 02: Prompt Engineering\n\xff\xfe\x9d")
+    assert progress.module_info(folder) == ("02", "Prompt Engineering")
+
+
+def test_module_info_falls_back_to_the_slug_when_the_first_line_itself_is_undecodable(tmp_path):
+    folder = tmp_path / "02-github-basics"
+    folder.mkdir()
+    (folder / "README.md").write_bytes(b"# Module 0\xff2: Something\nText\n")
+    assert progress.module_info(folder) == ("02", "Github Basics")
+
+
 def test_module_info_outside_a_module_folder(tmp_path):
     assert progress.module_info(tmp_path) == (None, "Exercise")
     assert progress.module_info(tmp_path / "_template") == (None, "Exercise")
@@ -120,5 +169,5 @@ def test_list_modules_of_the_real_repo():
 
 
 def test_progress_files_are_git_ignored():
-    for name in (".progress.json", ".progress.json.bak"):
+    for name in (".progress.json", ".progress.json.bak", ".progress.json.tmp"):
         assert subprocess.run(["git", "check-ignore", "-q", name], cwd=progress.REPO_ROOT).returncode == 0

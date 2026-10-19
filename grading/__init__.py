@@ -30,13 +30,20 @@ def _validate(question, points, needed, answer) -> None:
 
 
 def _record(module: str | None, check_name: str, passed: bool):
-    """(attempt, module_complete, progress view); all empty outside a module."""
+    """(attempt, module_complete, progress view); all empty outside a module.
+
+    Grading never fails because of the progress file: anything unexpected
+    here still lets the card show, just without the progress strip.
+    """
     if module is None:
         return None, False, None
-    result = progress.record(module, check_name, passed)
-    complete = progress.completed_modules() | ({module} if result.module_complete else set())
-    view = card.ProgressView(modules=progress.list_modules(), complete=complete, current=module, note=result.note)
-    return result.attempt, result.module_complete, view
+    try:
+        result = progress.record(module, check_name, passed)
+        complete = progress.completed_modules() | ({module} if result.module_complete else set())
+        view = card.ProgressView(modules=progress.list_modules(), complete=complete, current=module, note=result.note)
+        return result.attempt, result.module_complete, view
+    except Exception:
+        return None, False, None
 
 
 def check(question: str, points: dict[str, str], needed: int, answer: str) -> None:

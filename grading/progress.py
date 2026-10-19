@@ -49,7 +49,8 @@ def _valid(data) -> bool:
             and isinstance(entry.get("passed_checks"), list)
             and all(isinstance(c, str) for c in entry["passed_checks"])
             and isinstance(entry.get("attempts"), int)
-            and (entry.get("completed_on") is None or isinstance(entry["completed_on"], str))
+            and "completed_on" in entry
+            and (entry["completed_on"] is None or isinstance(entry["completed_on"], str))
         ):
             return False
     return True
@@ -74,8 +75,15 @@ def _load(path: Path) -> tuple[dict, str]:
 
 def _save(path: Path, data: dict) -> None:
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, sort_keys=True))
-    os.replace(tmp, path)
+    try:
+        tmp.write_text(json.dumps(data, indent=2, sort_keys=True))
+        os.replace(tmp, path)
+    except OSError:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        raise
 
 
 def record(module: str, check: str, passed: bool, *, path: Path | None = None,
@@ -128,10 +136,10 @@ def module_info(folder: Path) -> tuple[str | None, str]:
     number, slug = match.groups()
     title = slug.replace("-", " ").title()
     try:
-        first_line = (folder / "README.md").read_text().splitlines()[0]
+        first_line = (folder / "README.md").read_text(encoding="utf-8", errors="replace").splitlines()[0]
         heading = re.match(rf"^#\s+Module\s+{number}:\s*(.+?)\s*$", first_line)
         if heading:
             title = heading.group(1)
-    except (OSError, IndexError):
+    except (OSError, IndexError, ValueError):
         pass
     return number, title

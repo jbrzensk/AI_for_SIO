@@ -13,3 +13,4 @@ __pycache__/
 # Each learner's private exercise progress (grading/progress.py).
 .progress.json
 .progress.json.bak
+.progress.json.tmp
