@@ -95,7 +95,7 @@ easy future reference."
 
 ![Two chat exchanges. Asking "Could you maybe look at whether this function is slow?" gets "Yes, it might be slow": an answer, not the work. Telling "Analyze this function and explain why it may be slow" gets the actual analysis: .values loads the whole array into memory; use .mean(dim="time") and call .compute() only at the end.](images/ask-vs-tell.svg)
 
-<details>
+<details markdown="1">
 <summary><strong>Why this feels unnatural</strong></summary>
 
 This one runs against social instinct, so it's worth explaining why.
@@ -120,7 +120,7 @@ slow."
 > weighing your intent. Be as explicit as the task requires; don't make the
 > model guess what you meant.
 
-<details>
+<details markdown="1">
 <summary><strong>Going deeper: applying this to research tasks</strong></summary>
 
 - **Paper summaries:** extract the research question, methods, and data;
@@ -159,7 +159,7 @@ Do this in [exercise.ipynb](exercise.ipynb).
 **Success looks like:** a rewritten prompt specific enough that two
 different people using it would get comparably useful, checkable results.
 
-<details>
+<details markdown="1">
 <summary><strong>One strong version (try yours first)</strong></summary>
 
 For comparison, here's one strong version: *"I have a netCDF file of ocean

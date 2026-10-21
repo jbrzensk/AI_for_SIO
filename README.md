@@ -4,6 +4,8 @@ A modular, self-guided walkthrough for using AI effectively in a research
 workflow. Built to grow: start with the AI fundamentals, add modules like
 "GitHub basics" or "coding practices" whenever your group needs them.
 
+**Read it as a website:** [jbrzensk.github.io/AI_for_SIO](https://jbrzensk.github.io/AI_for_SIO/)
+
 ## How this repo is organized
 
 - **`modules/`** — one folder per lesson. Each follows the same template:

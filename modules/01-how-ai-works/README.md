@@ -54,7 +54,7 @@ do — fixes both.
   produce new content — text, code, images — by sampling from a learned
   distribution.
 
-<details>
+<details markdown="1">
 <summary><strong>Going deeper: temperature</strong></summary>
 
 **Temperature** controls the randomness of that sampling: low temperature
@@ -101,7 +101,7 @@ to trust the output.
 
 ![Three panels. Deductive, general to specific: "All mammals breathe air" and "Dolphins are mammals" lead to "Dolphins breathe air"; certain if the premises are true; in LLMs, running code or a formal proof. Inductive, specific to general: four white swans lead to "Probably all swans are white"; likely, not guaranteed; in LLMs, how the model was trained. Abductive, observation to best explanation: "The grass is wet" has candidate explanations rain, sprinkler, and dew, and rain is picked; a best guess, not a proof; in LLMs, explaining or diagnosing something new.](images/three-ways-of-reasoning.svg)
 
-<details>
+<details markdown="1">
 <summary><strong>The same comparison as a table</strong></summary>
 
 | Type | Direction | Pattern | Example | Certainty |
@@ -141,7 +141,7 @@ to trust the output.
 > as a first-pass reviewer or editor on something you can independently
 > check.
 
-<details>
+<details markdown="1">
 <summary><strong>Going deeper: types of LLMs (and Mixture of Experts)</strong></summary>
 
 LLMs differ along several axes: training data, training language,
@@ -164,7 +164,7 @@ total parameter count but a much smaller "active" parameter count.
 
 </details>
 
-<details>
+<details markdown="1">
 <summary><strong>A light word on responsible use: hallucination, bias, disclosure</strong></summary>
 
 This module is about mechanics, not ethics, but three things are worth
