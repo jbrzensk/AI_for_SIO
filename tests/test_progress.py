@@ -1,5 +1,7 @@
 import json
 import subprocess
+import threading
+import time
 from datetime import date
 
 import pytest
@@ -96,7 +98,41 @@ def test_record_reports_unwritable_and_leaves_no_tmp_file_when_replace_fails(pfi
 
 def test_no_temporary_file_is_left_behind(pfile):
     progress.record("02", "answer", True, path=pfile)
-    assert sorted(p.name for p in pfile.parent.iterdir()) == [".progress.json"]
+    assert ".progress.json.tmp" not in {p.name for p in pfile.parent.iterdir()}
+
+
+def test_overlapping_records_keep_every_attempt_and_the_pass(pfile, monkeypatch):
+    # Two kernels saving progress at the same moment must not overwrite each
+    # other. Widen the load-to-save window so the overlap is certain.
+    real_load = progress._load
+
+    def slow_load(path):
+        loaded = real_load(path)
+        time.sleep(0.05)
+        return loaded
+
+    monkeypatch.setattr(progress, "_load", slow_load)
+    threads = [
+        threading.Thread(target=progress.record, args=("02", "answer", i == 0), kwargs={"path": pfile})
+        for i in range(8)
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    entry = json.loads(pfile.read_text())["modules"]["02"]
+    assert entry["attempts"] == 8
+    assert entry["passed_checks"] == ["answer"]
+
+
+def test_a_lock_held_elsewhere_times_out_and_grading_still_records(pfile, monkeypatch):
+    monkeypatch.setattr(progress, "LOCK_TIMEOUT", 0.2)
+    with progress._locked(pfile):  # another kernel holding the lock and never letting go
+        started = time.monotonic()
+        result = progress.record("02", "answer", True, path=pfile)
+        waited = time.monotonic() - started
+    assert result.attempt == 1 and result.module_complete
+    assert 0.2 <= waited < 2
 
 
 def test_reset_removes_the_file(pfile):
@@ -169,5 +205,5 @@ def test_list_modules_of_the_real_repo():
 
 
 def test_progress_files_are_git_ignored():
-    for name in (".progress.json", ".progress.json.bak", ".progress.json.tmp"):
+    for name in (".progress.json", ".progress.json.bak", ".progress.json.tmp", ".progress.json.lock"):
         assert subprocess.run(["git", "check-ignore", "-q", name], cwd=progress.REPO_ROOT).returncode == 0

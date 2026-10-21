@@ -6,6 +6,8 @@ sent anywhere). Grading never fails because of this file.
 import json
 import os
 import re
+import time
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -21,6 +23,29 @@ UNREADABLE_NOTE = (
     ".progress.json.bak and progress started fresh."
 )
 UNWRITABLE_NOTE = "Your progress couldn't be saved this time (the progress file isn't writable)."
+
+# How long to wait for another kernel's load-and-save before going ahead
+# without the lock. Each holder keeps it for milliseconds.
+LOCK_TIMEOUT = 5.0
+
+if os.name == "nt":
+    import msvcrt
+
+    def _try_lock(f) -> None:
+        f.seek(0)
+        msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+
+    def _unlock(f) -> None:
+        f.seek(0)
+        msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+else:
+    import fcntl
+
+    def _try_lock(f) -> None:
+        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def _unlock(f) -> None:
+        fcntl.flock(f, fcntl.LOCK_UN)
 
 _MODULE_DIR = re.compile(r"^(\d\d)-(.+)$")
 
@@ -73,6 +98,40 @@ def _load(path: Path) -> tuple[dict, str]:
     return _empty(), UNREADABLE_NOTE
 
 
+@contextmanager
+def _locked(path: Path):
+    """Hold an OS file lock on <path>.lock for one load-and-save, so two
+    kernels saving at once can't overwrite each other's progress. The OS
+    drops the lock if a kernel dies. If the lock can't be taken within
+    LOCK_TIMEOUT, or its file can't be created, carry on unlocked: grading
+    never fails because of the progress file."""
+    try:
+        f = open(path.with_name(path.name + ".lock"), "a+b")
+    except OSError:
+        yield
+        return
+    locked = False
+    deadline = time.monotonic() + LOCK_TIMEOUT
+    try:
+        while True:
+            try:
+                _try_lock(f)
+                locked = True
+                break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    break
+                time.sleep(0.02)
+        yield
+    finally:
+        if locked:
+            try:
+                _unlock(f)
+            except OSError:
+                pass
+        f.close()
+
+
 def _save(path: Path, data: dict) -> None:
     tmp = path.with_name(path.name + ".tmp")
     try:
@@ -90,33 +149,37 @@ def record(module: str, check: str, passed: bool, *, path: Path | None = None,
            today: date | None = None) -> RecordResult:
     """Count one graded attempt at `check` ("answer" or "code") for `module`."""
     path = path or PROGRESS_FILE
-    data, note = _load(path)
-    entry = data["modules"].setdefault(module, {"passed_checks": [], "attempts": 0, "completed_on": None})
-    entry["attempts"] += 1
-    if passed and check not in entry["passed_checks"]:
-        entry["passed_checks"] = sorted(entry["passed_checks"] + [check])
-    complete = required_checks(module) <= set(entry["passed_checks"])
-    if complete and entry["completed_on"] is None:
-        entry["completed_on"] = (today or date.today()).isoformat()
-    try:
-        _save(path, data)
-    except OSError:
-        note = f"{note} {UNWRITABLE_NOTE}".strip()
+    with _locked(path):
+        data, note = _load(path)
+        entry = data["modules"].setdefault(module, {"passed_checks": [], "attempts": 0, "completed_on": None})
+        entry["attempts"] += 1
+        if passed and check not in entry["passed_checks"]:
+            entry["passed_checks"] = sorted(entry["passed_checks"] + [check])
+        complete = required_checks(module) <= set(entry["passed_checks"])
+        if complete and entry["completed_on"] is None:
+            entry["completed_on"] = (today or date.today()).isoformat()
+        try:
+            _save(path, data)
+        except OSError:
+            note = f"{note} {UNWRITABLE_NOTE}".strip()
     return RecordResult(attempt=entry["attempts"], module_complete=complete, note=note)
 
 
 def completed_modules(*, path: Path | None = None) -> set[str]:
-    data, _ = _load(path or PROGRESS_FILE)
+    path = path or PROGRESS_FILE
+    with _locked(path):  # loading can move a corrupt file aside
+        data, _ = _load(path)
     return {m for m, e in data["modules"].items() if required_checks(m) <= set(e["passed_checks"])}
 
 
 def reset(*, path: Path | None = None) -> None:
     path = path or PROGRESS_FILE
-    for p in (path, path.with_name(path.name + ".tmp")):
-        try:
-            p.unlink()
-        except FileNotFoundError:
-            pass
+    with _locked(path):
+        for p in (path, path.with_name(path.name + ".tmp")):
+            try:
+                p.unlink()
+            except FileNotFoundError:
+                pass
 
 
 def list_modules(modules_dir: Path | None = None) -> list[str]:
