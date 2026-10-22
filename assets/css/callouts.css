@@ -1,0 +1,27 @@
+/* GitHub-style callouts on the Pages site (assets/js/callouts.js), in
+   GitHub's dark-theme callout colours, which suit Midnight's dark
+   background. Overrides Midnight's italic, yellow-barred quote style. */
+
+.wrapper > section blockquote.callout {
+  margin: 0 0 20px;
+  padding: 6px 0 2px 16px;
+  border-left: 4px solid var(--callout-color);
+  font-style: normal;
+}
+.wrapper > section blockquote.callout > :last-child { margin-bottom: 8px; }
+
+.wrapper > section blockquote.callout .callout-title {
+  margin: 0 0 6px;
+  color: var(--callout-color);
+  font-weight: bold;
+}
+
+.callout-note      { --callout-color: #4493f8; }
+.callout-tip       { --callout-color: #3fb950; }
+.callout-important { --callout-color: #ab7df8; }
+.callout-warning   { --callout-color: #d29922; }
+.callout-caution   { --callout-color: #f85149; }
+
+/* Collapsible sections: Midnight sets <summary> to display:block, which
+   hides the browser's ▶ arrow, so readers can't tell they open. */
+.wrapper > section details > summary { display: list-item; cursor: pointer; }
