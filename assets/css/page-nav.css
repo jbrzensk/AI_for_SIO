@@ -1,0 +1,62 @@
+/* "On this page" navigation (assets/js/page-nav.js), styled to match the
+   Midnight theme: muted grey links, the theme's yellow for the current
+   section. */
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Keep a jumped-to heading clear of the theme's fixed 64px top bar. */
+.wrapper > section h2,
+.wrapper > section h3 { scroll-margin-top: 80px; }
+
+.page-nav ul { list-style: none; margin: 0; padding: 0; }
+.page-nav li { margin: 0; padding: 0; }
+.page-nav a {
+  display: block;
+  padding: 3px 0 3px 10px;
+  border-left: 2px solid transparent;
+  color: #b6b6b6;
+  font-size: 13px;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.page-nav a:hover { color: #ffeb9b; }
+.page-nav a.is-active { color: #ffcc00; border-left-color: #ffcc00; }
+.page-nav ul ul a { padding-left: 22px; font-size: 12.5px; }
+
+/* Wide screens: a column fixed to the right of the 650px content. */
+.page-nav-side { display: none; }
+.page-nav-title {
+  margin: 0 0 8px 12px;
+  color: #e8e8e8;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Narrow screens: a collapsed box at the top of the content. */
+.page-nav-inline {
+  margin: 0 0 24px;
+  padding: 8px 12px;
+  border: 1px solid #434343;
+  border-radius: 4px;
+  background: #1f1f1f;
+}
+.page-nav-inline summary { cursor: pointer; color: #e8e8e8; font-weight: bold; }
+.page-nav-inline[open] summary { margin-bottom: 8px; }
+
+@media (min-width: 1200px) {
+  .page-nav-side {
+    display: block;
+    position: fixed;
+    top: 90px;
+    left: calc(50% + 365px);
+    width: 220px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  .page-nav-inline { display: none; }
+}
